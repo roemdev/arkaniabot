@@ -1,10 +1,25 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('ping')
-		.setDescription('Replies with Pong!'),
+		.setDescription('Pong!'),
 	async execute(interaction) {
-		await interaction.reply('Pong! :ping_pong:');
+		// Medir el tiempo antes de enviar la respuesta
+		const botLatency = Date.now() - interaction.createdTimestamp;
+		const apiLatency = Math.round(interaction.client.ws.ping);
+
+		// Crear el embed
+		const embed = new EmbedBuilder()
+			.setColor('#e6ab99')
+			.setTitle('Pong! :ping_pong:')
+			.addFields(
+				{ name: 'Bot Latency', value: `${botLatency}ms`, inline: true },
+				{ name: 'API Latency', value: `${apiLatency}ms`, inline: true }
+			)
+			.setTimestamp();
+
+		// Enviar el embed como respuesta
+		await interaction.reply({ embeds: [embed] });
 	},
 };

@@ -9,9 +9,9 @@ module.exports = {
                 .setDescription('Elige piedra, papel o tijera.')
                 .setRequired(true)
                 .addChoices([
-                    { name: 'Piedra 🪨', value: 'piedra' },
-                    { name: 'Papel 📄', value: 'papel' },
-                    { name: 'Tijera ✂️', value: 'tijera' }
+                    { name: '🪨 Piedra', value: 'piedra' },
+                    { name: '📄 Papel', value: 'papel' },
+                    { name: '✂️ Tijera', value: 'tijera' }
                 ])),
     async execute(interaction) {
         const choices = ['piedra', 'papel', 'tijera'];

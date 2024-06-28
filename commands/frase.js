@@ -21,7 +21,7 @@ module.exports = {
 
             // Construir el embed con la cita
             const embed = new EmbedBuilder()
-                .setColor('#e6ab99')
+                .setColor('NotQuiteBlack')
                 .setDescription(`${randomQuote} 💭`);
 
             // Enviar la cita como respuesta al usuario

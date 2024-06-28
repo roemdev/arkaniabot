@@ -52,7 +52,7 @@ module.exports = {
 
         // Embed con el resultado del juego
         const embed = new EmbedBuilder()
-            .setColor('#e6ab99')
+            .setColor('NotQuiteBlack')
             .setTitle('Piedra, Papel o Tijera')
             .setDescription(`**Elegiste:** ${playerChoice} ${emojiPlayer}\n**Yo elegí:** ${botChoice} ${emojiBot}\n## ${result}`);
 

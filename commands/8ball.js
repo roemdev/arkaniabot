@@ -22,7 +22,7 @@ module.exports = {
 
         // Construir el embed usando EmbedBuilder
         const embed = new EmbedBuilder()
-            .setColor('#e6ab99')
+            .setColor('NotQuiteBlack')
             .setTitle(' ')
             .setDescription(`### ${pregunta}\n🎱 ${response}`)
 

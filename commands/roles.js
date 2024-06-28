@@ -7,7 +7,7 @@ module.exports = {
         .setDescription('Envía la lista de roles en Arkania.'),
     async execute(interaction) {
         const embed = new EmbedBuilder()
-            .setColor('#e6ab99')
+            .setColor('NotQuiteBlack')
             .setTitle('Roles en Arkania')
             .setDescription('Aquí tienes la lista de los roles en Arkania.')
             .addFields(

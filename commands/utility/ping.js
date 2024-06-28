@@ -11,7 +11,7 @@ module.exports = {
 
 		// Crear el embed
 		const embed = new EmbedBuilder()
-			.setColor('#e6ab99')
+			.setColor('NotQuiteBlack')
 			.setTitle('Pong! :ping_pong:')
 			.addFields(
 				{ name: 'Bot Latency', value: `${botLatency}ms`, inline: true },

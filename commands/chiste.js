@@ -21,7 +21,7 @@ module.exports = {
 
             // Crear el embed
             const embed = new EmbedBuilder()
-                .setColor('#e6ab99')
+                .setColor('NotQuiteBlack')
                 .setDescription(`${randomJoke} 😂`);
 
             // Enviar el chiste

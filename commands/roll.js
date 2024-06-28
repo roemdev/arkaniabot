@@ -25,7 +25,7 @@ module.exports = {
 
         // Embed
         const embed = new EmbedBuilder()
-            .setColor('#e6ab99')
+            .setColor('NotQuiteBlack')
             .setTitle('Resultado')
             .setDescription(`🎲 Has lanzado un dado de **${sides}** caras y ha salido: **${rollResult}**`);
 

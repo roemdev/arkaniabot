@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionsBitField } = require('discord.js');
+const { SlashCommandBuilder, PermissionsBitField, EmbedBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -22,7 +22,13 @@ module.exports = {
 
         try {
             const emoji = await interaction.guild.emojis.create({ attachment: url, name: nombre });
-            interaction.reply(`Emoji creado correctamente: ${emoji}`);
+            const embed = new EmbedBuilder()
+            .setColor('NotQuiteBlack')
+            .setTitle(' ')
+            .setDescription(`Emoji creado correctamente: ${emoji}`)
+
+        // Responder con el embed
+        await interaction.reply({ embeds: [embed], ephemeral: true });
         } catch (error) {
             console.error(error);
             interaction.reply('Hubo un error al intentar crear el emoji.');

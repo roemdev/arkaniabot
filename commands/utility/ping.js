@@ -20,6 +20,6 @@ module.exports = {
 			.setTimestamp();
 
 		// Enviar el embed como respuesta
-		await interaction.reply({ embeds: [embed] });
+		await interaction.reply({ embeds: [embed], ephemeral: true });
 	},
 };

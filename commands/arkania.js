@@ -8,5 +8,5 @@ module.exports = {
     async execute(interaction) {
         const link = 'https://discord.gg/jA8tx5Vwe5';
         interaction.reply(`🔗 ${link}`)
-        }
+    }
 }

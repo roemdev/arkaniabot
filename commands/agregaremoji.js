@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionsBitField, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -11,12 +11,14 @@ module.exports = {
         .addStringOption(option =>
             option.setName('nombre')
                 .setDescription('El nombre del emoji')
-                .setRequired(true)),
+                .setRequired(true))
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuildExpressions)
+        .setDMPermission(false),
     async execute(interaction) {
         const url = interaction.options.getString('url');
         const nombre = interaction.options.getString('nombre');
 
-        if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageEmojisAndStickers)) {
+        if (!interaction.member.permissions.has(PermissionFlagsBits.ManageGuildExpressions)) {
             return interaction.reply('No tienes permisos para gestionar emojis.');
         }
 

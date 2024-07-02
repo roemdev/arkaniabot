@@ -17,7 +17,7 @@ module.exports = {
 
         if (!match) {
             const errorEmbed = new EmbedBuilder()
-                .setColor('NotQuiteBlack') // Rojo para indicar error
+                .setColor('#F87171')
                 .setDescription('¡Debes proporcionar un emoji del servidor!');
             return interaction.reply({ embeds: [errorEmbed], ephemeral: true });
         }
@@ -30,7 +30,7 @@ module.exports = {
         
         // Embed
         const embed = new EmbedBuilder()
-            .setColor('NotQuiteBlack')
+            .setColor('#79E096')
             .setImage(emojiUrl);
 
         await interaction.reply({ embeds: [embed], allowedMentions: { repliedUser: false } })

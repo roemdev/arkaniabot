@@ -25,7 +25,7 @@ module.exports = {
         try {
             const emoji = await interaction.guild.emojis.create({ attachment: url, name: nombre });
             const embed = new EmbedBuilder()
-            .setColor('NotQuiteBlack')
+            .setColor('#79E096')
             .setTitle(' ')
             .setDescription(`Emoji creado correctamente: ${emoji}`)
 

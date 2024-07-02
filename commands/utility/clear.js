@@ -24,7 +24,7 @@ module.exports = {
         });
 
         const embed = new EmbedBuilder()
-            .setColor('NotQuiteBlack')
+            .setColor('#79E096')
             .setTitle(' ')
             .setDescription(`He borrado **${amount}** mensajes.`)
 

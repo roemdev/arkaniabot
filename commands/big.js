@@ -30,7 +30,7 @@ module.exports = {
         
         // Embed
         const embed = new EmbedBuilder()
-            .setColor('#79E096')
+            .setColor('NotQuiteBlack')
             .setImage(emojiUrl);
 
         await interaction.reply({ embeds: [embed], allowedMentions: { repliedUser: false } })

@@ -12,7 +12,6 @@ const commandFilesAndFolders = fs.readdirSync(commandsPath);
 for (const item of commandFilesAndFolders) {
   const itemPath = path.join(commandsPath, item);
   if (fs.statSync(itemPath).isDirectory()) {
-    // If the item is a directory, read the files inside it
     const commandFiles = fs
       .readdirSync(itemPath)
       .filter((file) => file.endsWith(".js"));
@@ -28,7 +27,6 @@ for (const item of commandFilesAndFolders) {
       }
     }
   } else if (item.endsWith(".js")) {
-    // If the item is a file and ends with .js, read it directly
     const command = require(itemPath);
     if ("data" in command && "execute" in command) {
       client.commands.set(command.data.name, command);

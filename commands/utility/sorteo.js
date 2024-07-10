@@ -48,7 +48,7 @@ module.exports = {
     if (subcommand === "iniciar") {
       const inscribirmeButton = new ButtonBuilder()
         .setCustomId("inscribirme")
-        .setLabel("**Inscribirme**")
+        .setLabel("Inscribirme")
         .setStyle(ButtonStyle.Primary)
         .setEmoji("🎉");
 

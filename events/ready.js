@@ -1,13 +1,15 @@
-const { Events, ActivityType  } = require('discord.js');
+const { Events, ActivityType } = require("discord.js");
 
 module.exports = {
-	name: Events.ClientReady,
-	once: true,
-	execute(client) {
-		console.log(`Ready! Logged in as ${client.user.tag}`);
-		client.user.setPresence({
-			activities: [{ name: `Soy el botsito de Arkania`, type: ActivityType.Custom }],
-			status: 'online',
-		  });
-	},
+  name: Events.ClientReady,
+  once: true,
+  execute(client) {
+    console.log(`Ready! Logged in as ${client.user.tag}`);
+    client.user.setPresence({
+      activities: [
+        { name: `Soy el botsito de Arkania`, type: ActivityType.Custom },
+      ],
+      status: "online",
+    });
+  },
 };

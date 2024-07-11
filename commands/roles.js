@@ -13,7 +13,7 @@ module.exports = {
         {
           name: "Roles principales",
           value:
-            "* <@&991405352660779028> Fundador del gremio.\n* <@&1251292331852697623> Sub-fundador del gremio.\n* <@&991490018151514123> Segundos al mendo.\n* <@&1215767915329228890> Miembros del gremio.",
+            "* <@&991405352660779028> Fundador del gremio.\n* <@&1251292331852697623> Sub-fundador del gremio.\n* <@&991490018151514123> Segundos al mando.",
         },
         {
           name: "Roles por nivel",

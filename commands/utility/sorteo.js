@@ -28,7 +28,7 @@ module.exports = {
     let inscritos = [];
     const organizadorSorteo = "<@1254796486718525481>";
     const finalizaSorteo = "<t:1720652400:R>";
-    const premioSorteo = ":coin: 2,000,000";
+    const premioSorteo = "Premio del Sorteo";
 
     // Manejo del archivo inscritos.json
     if (fs.existsSync(filePath)) {
@@ -48,13 +48,13 @@ module.exports = {
     if (subcommand === "iniciar") {
       const inscribirmeButton = new ButtonBuilder()
         .setCustomId("inscribirme")
-        .setLabel("Inscribirme")
+        .setLabel(" ")
         .setStyle(ButtonStyle.Primary)
         .setEmoji("🎉");
 
       const terminosButton = new ButtonBuilder()
         .setCustomId("terminos")
-        .setLabel("Términos y Condiciones")
+        .setLabel("Términos")
         .setStyle(ButtonStyle.Secondary)
         .setEmoji("📝");
 
@@ -66,18 +66,8 @@ module.exports = {
       const embed = new EmbedBuilder()
         .setColor("NotQuiteBlack")
         .setTitle(premioSorteo)
-        .setDescription(" ")
-        .addFields(
-          { name: "Organizador", value: organizadorSorteo, inline: true },
-          { name: "Finaliza", value: finalizaSorteo, inline: true },
-          {
-            name: "Participantes",
-            value: `**${inscritos.length}**`,
-            inline: true,
-          }
-        )
-        .setImage(
-          "https://media.discordapp.net/attachments/1240392315307032597/1259135702935928862/SORTEO_1.png?ex=668a9501&is=66894381&hm=3fe8021862278f1d3270fa0a7dacee6f0661ab4dd8d28d8f5307fe014a7937d2&=&format=webp&quality=lossless"
+        .setDescription(
+          `Finaliza: ${finalizaSorteo}\nOganizado por: ${organizadorSorteo}\nParticipantes: **${inscritos.length}**.\nGanadores: **1**`
         );
 
       const message = await interaction.channel.send({
@@ -118,26 +108,8 @@ module.exports = {
             const updatedEmbed = new EmbedBuilder()
               .setColor("NotQuiteBlack")
               .setTitle(premioSorteo)
-              .setDescription(" ")
-              .addFields(
-                {
-                  name: "Organizador",
-                  value: organizadorSorteo,
-                  inline: true,
-                },
-                {
-                  name: "Finaliza",
-                  value: finalizaSorteo,
-                  inline: true,
-                },
-                {
-                  name: "Participantes",
-                  value: `**${inscritos.length}**`,
-                  inline: true,
-                }
-              )
-              .setImage(
-                "https://media.discordapp.net/attachments/1240392315307032597/1259135702935928862/SORTEO_1.png?ex=668a9501&is=66894381&hm=3fe8021862278f1d3270fa0a7dacee6f0661ab4dd8d28d8f5307fe014a7937d2&=&format=webp&quality=lossless"
+              .setDescription(
+                `Finaliza: ${finalizaSorteo}\nOganizado por: ${organizadorSorteo}\nParticipantes: **${inscritos.length}**.\nGanadores: **1**`
               );
 
             await message.edit({ embeds: [updatedEmbed], components: [row] });
@@ -193,6 +165,7 @@ module.exports = {
       const inscritosButton = new ButtonBuilder()
         .setCustomId("inscritos")
         .setLabel("Inscritos")
+        .setEmoji("📋")
         .setStyle(ButtonStyle.Secondary);
 
       const elegirGanadorButton = new ButtonBuilder()

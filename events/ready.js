@@ -7,7 +7,7 @@ module.exports = {
     console.log(`Ready! Logged in as ${client.user.tag}`);
     client.user.setPresence({
       activities: [
-        { name: `Soy el botsito de Arkania`, type: ActivityType.Custom },
+        { name: `Soy ArkaniaBot Beta`, type: ActivityType.Custom },
       ],
       status: "online",
     });

@@ -1,10 +1,13 @@
 const {
   SlashCommandBuilder,
-  PermissionFlagsBits,
+  ModalBuilder,
+  TextInputBuilder,
+  TextInputStyle,
   ActionRowBuilder,
+  EmbedBuilder,
+  PermissionFlagsBits,
   ButtonBuilder,
   ButtonStyle,
-  EmbedBuilder,
 } = require("discord.js");
 const fs = require("fs");
 
@@ -12,34 +15,62 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("sorteo")
     .setDescription("Inicia un nuevo sorteo")
-    .setDefaultMemberPermissions(PermissionFlagsBits.ManageEvents)
-    .addStringOption((option) =>
-      option
-        .setName("organizador")
-        .setDescription("Nombre del organizador del sorteo")
-        .setRequired(true)
-    )
-    .addStringOption((option) =>
-      option
-        .setName("duracion")
-        .setDescription("Duración del sorteo (Formato: 1m, 1h, 1d)")
-        .setRequired(true)
-    )
-    .addStringOption((option) =>
-      option.setName("premio").setDescription("Premio del sorteo").setRequired(true)
-    )
-    .addIntegerOption((option) =>
-      option
-        .setName("ganadores")
-        .setDescription("Número de ganadores")
-        .setRequired(true)
-    ),
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageEvents),
 
   async execute(interaction) {
-    const organizador = interaction.options.getString("organizador");
-    const duracion = interaction.options.getString("duracion");
-    const premio = interaction.options.getString("premio");
-    const numeroGanadores = interaction.options.getInteger("ganadores");
+    // Verificar permisos
+    if (!interaction.member.permissions.has(PermissionFlagsBits.ManageEvents)) {
+      return interaction.reply({
+        content: "No tienes permisos para ejecutar este comando.",
+        ephemeral: true,
+      });
+    }
+
+    // Crea un modal
+    const modal = new ModalBuilder()
+      .setCustomId("sorteoModal")
+      .setTitle("Crear Sorteo");
+
+    // Crea los campos de entrada para el modal
+    const duracionInput = new TextInputBuilder()
+      .setCustomId("duracion")
+      .setLabel("Duración del Sorteo (Formato: 1m, 1h, 1d)")
+      .setStyle(TextInputStyle.Short)
+      .setRequired(true);
+
+    const premioInput = new TextInputBuilder()
+      .setCustomId("premio")
+      .setLabel("Premio del Sorteo")
+      .setStyle(TextInputStyle.Short)
+      .setRequired(true);
+
+    const ganadoresInput = new TextInputBuilder()
+      .setCustomId("ganadores")
+      .setLabel("Número de Ganadores")
+      .setStyle(TextInputStyle.Short)
+      .setRequired(true);
+
+    // Agrega los campos de entrada al modal
+    const firstActionRow = new ActionRowBuilder().addComponents(duracionInput);
+    const secondActionRow = new ActionRowBuilder().addComponents(premioInput);
+    const thirdActionRow = new ActionRowBuilder().addComponents(ganadoresInput);
+
+    modal.addComponents(firstActionRow, secondActionRow, thirdActionRow);
+
+    // Muestra el modal al usuario
+    await interaction.showModal(modal);
+  },
+
+  async handleModalSubmit(interaction) {
+    if (interaction.customId !== "sorteoModal") return;
+
+    const organizador = interaction.user.username; // Tomar el nombre del usuario que ejecuta el comando
+    const duracion = interaction.fields.getTextInputValue("duracion");
+    const premio = interaction.fields.getTextInputValue("premio");
+    const numeroGanadores = parseInt(
+      interaction.fields.getTextInputValue("ganadores"),
+      10
+    );
 
     function convertirDuracion(duracion) {
       const unidad = duracion.slice(-1);
@@ -94,19 +125,13 @@ module.exports = {
       .setStyle(ButtonStyle.Primary)
       .setEmoji("🎉");
 
-    const terminosButton = new ButtonBuilder()
-      .setCustomId("terminos")
-      .setLabel("Términos")
-      .setStyle(ButtonStyle.Secondary)
-      .setEmoji("📝");
-
-    const row = new ActionRowBuilder().addComponents(inscribirmeButton, terminosButton);
+    const row = new ActionRowBuilder().addComponents(inscribirmeButton);
 
     const embed = new EmbedBuilder()
       .setColor("NotQuiteBlack")
       .setTitle(premio)
       .setDescription(
-        `Finaliza: <t:${finalizaTimestamp}:R> | (<t:${finalizaTimestamp}:D>)\nOrganizado por: ${organizador}\nParticipantes **${inscritos.length}\n**Ganadores: **${numeroGanadores}**`
+        `Finaliza: <t:${finalizaTimestamp}:R> | (<t:${finalizaTimestamp}:D>)\nOrganizado por: ${organizador}\nParticipantes **${inscritos.length}**\nGanadores: **${numeroGanadores}**`
       );
 
     const message = await interaction.channel.send({
@@ -115,10 +140,16 @@ module.exports = {
     });
 
     // Responder con un mensaje efímero
-    await interaction.reply({ content: "Sorteo creado :white_check_mark:", ephemeral: true });
+    await interaction.reply({
+      content: "Sorteo creado :white_check_mark:",
+      ephemeral: true,
+    });
 
-    const filter = (i) => i.customId === "inscribirme" || i.customId === "terminos";
-    const collector = interaction.channel.createMessageComponentCollector({ filter, time: duracionMs });
+    const filter = (i) => i.customId === "inscribirme";
+    const collector = interaction.channel.createMessageComponentCollector({
+      filter,
+      time: duracionMs,
+    });
 
     collector.on("collect", async (i) => {
       const userId = i.user.id;
@@ -126,11 +157,15 @@ module.exports = {
 
       if (i.customId === "inscribirme") {
         if (inscritos.includes(userId)) {
-          embedReply.setColor("NotQuiteBlack").setDescription("Ya estás participando.");
+          embedReply
+            .setColor("NotQuiteBlack")
+            .setDescription("Ya estás participando.");
         } else {
           inscritos.push(userId);
           fs.writeFileSync(filePath, JSON.stringify(inscritos, null, 2));
-          embedReply.setColor("#79E096").setDescription("¡Te has inscrito correctamente!");
+          embedReply
+            .setColor("#79E096")
+            .setDescription("¡Te has inscrito correctamente!");
 
           // Actualizar el embed original con el nuevo número de participantes
           const updatedEmbed = new EmbedBuilder()
@@ -143,13 +178,6 @@ module.exports = {
           await message.edit({ embeds: [updatedEmbed], components: [row] });
         }
         await i.reply({ embeds: [embedReply], ephemeral: true });
-      } else if (i.customId === "terminos") {
-        const terminosEmbed = new EmbedBuilder()
-          .setColor("NotQuiteBlack")
-          .setTitle(" ")
-          .setDescription("No hay términos específicos para este sorteo.");
-
-        await i.reply({ embeds: [terminosEmbed], ephemeral: true });
       }
     });
 
@@ -167,19 +195,15 @@ module.exports = {
         inscritos.splice(randomIndex, 1); // Eliminar el ganador de la lista para evitar duplicados
       }
 
-      const ganadoresEmbed = new EmbedBuilder()
-        .setColor("#FFD700")
-        .setTitle("🎉 ¡Ganadores del Sorteo! 🎉")
+      // Editar el mensaje original para indicar los ganadores
+      const updatedEmbed = new EmbedBuilder()
+        .setColor("NotQuiteBlack")
+        .setTitle(premio)
         .setDescription(
-          `¡Los ganadores del sorteo son ${ganadores.map((id) => `<@${id}>`).join(", ")}! Felicidades! 🎉`
-        )
-        .addFields({ name: "Premio", value: premio })
-        .setTimestamp();
-
-      await interaction.channel.send({ embeds: [ganadoresEmbed] });
-
-      // Editar el mensaje original para indicar que el sorteo ha terminado
-      const updatedEmbed = new EmbedBuilder(embed).setDescription("El sorteo ha terminado.");
+          `Finaliza: <t:${finalizaTimestamp}:R> | (<t:${finalizaTimestamp}:D>)\nOrganizado por: ${organizador}\nParticipantes **${
+            inscritos.length
+          }**\nGanadores: ${ganadores.map((id) => `<@${id}>`).join(", ")}`
+        );
 
       await message.edit({ embeds: [updatedEmbed], components: [] });
 

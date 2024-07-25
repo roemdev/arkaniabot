@@ -11,7 +11,8 @@
   "description": "Get started by customizing your environment (defined in the .idx/dev.nix file) with the tools and IDE extensions you'll need for your project!",
   "dependencies": {
     "discord.js": "^14.15.3",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "eslint": "^9.5.0"

@@ -12,7 +12,6 @@ for (const item of commandFilesAndFolders) {
   const stats = fs.statSync(itemPath);
 
   if (stats.isDirectory()) {
-    // If the item is a directory, read the files inside it
     const commandFiles = fs
       .readdirSync(itemPath)
       .filter((file) => file.endsWith(".js"));
@@ -28,7 +27,6 @@ for (const item of commandFilesAndFolders) {
       }
     }
   } else if (stats.isFile() && item.endsWith(".js")) {
-    // If the item is a file and ends with .js, read it directly
     const command = require(itemPath);
     if ("data" in command && "execute" in command) {
       commands.push(command.data.toJSON());
@@ -54,7 +52,6 @@ const rest = new REST({ version: "10" }).setToken(token);
       `Started refreshing ${commands.length} application (/) commands.`
     );
 
-    // The put method is used to fully refresh all commands in the guild with the current set
     const data = await rest.put(
       Routes.applicationGuildCommands(clientId, guildId),
       { body: commands }
@@ -64,7 +61,6 @@ const rest = new REST({ version: "10" }).setToken(token);
       `Successfully reloaded ${data.length} application (/) commands.`
     );
   } catch (error) {
-    // And of course, make sure you catch and log any errors!
     console.error(error);
   }
 })();

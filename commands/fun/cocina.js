@@ -98,7 +98,7 @@ module.exports = {
       const filter = (i) => i.customId.startsWith("calificacion_");
       const collector = interaction.channel.createMessageComponentCollector({
         filter,
-        time: 1 * 60 * 1000, // 1 minuto para debug
+        time: 2 * 60 * 1000,
       });
 
       let calificaciones = [];

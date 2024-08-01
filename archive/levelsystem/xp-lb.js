@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require("discord.js");
+const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const db = require("../../database/database");
 
 module.exports = {
@@ -16,10 +16,15 @@ module.exports = {
           const leaderboard = rows
             .map(
               (row, index) =>
-                `${index + 1}. <@${row.user_id}> - ${row.experience} XP`
+                `\`${index + 1}\`. <@${row.user_id}> • **Nivel ${row.level}**`
             )
             .join("\n");
-          interaction.reply(`Experience Leaderboard:\n${leaderboard}`);
+
+          const embedlb = new EmbedBuilder()
+            .setColor("NotQuiteBlack")
+            .setTitle("Tabla de clasificación")
+            .setDescription(leaderboard);
+          interaction.reply({ embeds: [embedlb] });
         }
       }
     );

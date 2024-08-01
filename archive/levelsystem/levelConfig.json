@@ -1,0 +1,8 @@
+{
+  "canalNivelUp": "ID_DEL_CANAL_DE_NIVEL_UP",
+  "rolesPorNivel": {
+    "1": "ID_DEL_ROL_NIVEL_1",
+    "2": "ID_DEL_ROL_NIVEL_2",
+    "3": "ID_DEL_ROL_NIVEL_3"
+  }
+}

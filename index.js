@@ -1,8 +1,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { Client, Collection, GatewayIntentBits } = require("discord.js");
-const { token } = require("./config.json");
-const db = require("./database/database");
+require("dotenv").config();
 
 const client = new Client({
   intents: [
@@ -55,10 +54,10 @@ for (const file of eventFiles) {
   const filePath = path.join(eventsPath, file);
   const event = require(filePath);
   if (event.once) {
-    client.once(event.name, (...args) => event.execute(...args, db));
+    client.once(event.name, (...args) => event.execute(...args));
   } else {
-    client.on(event.name, (...args) => event.execute(...args, db));
+    client.on(event.name, (...args) => event.execute(...args));
   }
 }
 
-client.login(token);
+client.login(process.env.DISCORD_TOKEN);

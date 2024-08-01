@@ -1,7 +1,0 @@
-node_modules
-.env
-events/ready.js
-.idx
-archive
-database
-.eslintrc.json

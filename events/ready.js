@@ -7,9 +7,9 @@ module.exports = {
     console.log(`Ready! Logged in as ${client.user.tag}`);
     client.user.setPresence({
       activities: [
-        { name: `Soy ArkaniaBot Beta`, type: ActivityType.Custom },
+        { name: `🔗 discord.gg/jA8tx5Vwe5`, type: ActivityType.Custom },
       ],
-      status: "online",
+      status: "online"
     });
   },
 };

@@ -163,7 +163,7 @@ module.exports = {
             .setColor("NotQuiteBlack")
             .setTitle(premio)
             .setDescription(
-              `Finaliza: <t:${finalizaTimestamp}:R> | (<t:${finalizaTimestamp}:D>)\nOrganizado por: ${organizador}\nParticipantes **${inscritos.length}**\nGanadores: **${numeroGanadores}**`
+              `Finaliza: <t:${finalizaTimestamp}:R> | (<t:${finalizaTimestamp}:D>)\nOrganizado por: ${organizador}\nParticipantes: **${inscritos.length}**\nGanadores: **${numeroGanadores}**`
             );
 
           await message.edit({ embeds: [updatedEmbed], components: [row] });
@@ -193,7 +193,7 @@ module.exports = {
         .setColor("NotQuiteBlack")
         .setTitle(premio)
         .setDescription(
-          `Finalizó: <t:${finalizaTimestamp}:R> | (<t:${finalizaTimestamp}:D>)\nOrganizado por: ${organizador}\nParticipantes **${inscritos.length}**\nGanadores: **${ganadoresMention}**`
+          `Finalizó: <t:${finalizaTimestamp}:R> | (<t:${finalizaTimestamp}:D>)\nOrganizado por: ${organizador}\nParticipantes: **${inscritos.length}**\nGanadores: **${ganadoresMention}**`
         );
 
       await message.edit({ embeds: [finalEmbed], components: [] });

@@ -59,7 +59,7 @@ module.exports = {
   async handleModalSubmit(interaction) {
     if (interaction.customId !== "sorteoModal") return;
 
-    const organizador = interaction.user.username;
+    const organizador = interaction.user.id;
     const duracion = interaction.fields.getTextInputValue("duracion");
     const premio = interaction.fields.getTextInputValue("premio");
     const numeroGanadores = parseInt(
@@ -95,6 +95,9 @@ module.exports = {
     }
 
     const finalizaTimestamp = Math.floor((Date.now() + duracionMs) / 1000);
+    const fechaFinalizacion = new Date(finalizaTimestamp * 1000)
+      .toLocaleDateString("es-ES")
+      .replace(/\//g, "/");
 
     const filePath = "./json/inscritos.json";
     let inscritos = [];
@@ -124,8 +127,9 @@ module.exports = {
       .setColor("NotQuiteBlack")
       .setTitle(premio)
       .setDescription(
-        `Finaliza: <t:${finalizaTimestamp}:R> | (<t:${finalizaTimestamp}:D>)\nOrganizado por: ${organizador}\nParticipantes **${inscritos.length}**\nGanadores: **${numeroGanadores}**`
-      );
+        `Finaliza: <t:${finalizaTimestamp}:R> | (<t:${finalizaTimestamp}:D>)\nOrganizador: <@${organizador}>\nParticipantes: **${inscritos.length}**\nGanadores: **${numeroGanadores}**`
+      )
+      .setFooter({ text: `${fechaFinalizacion}` });
 
     const message = await interaction.channel.send({
       embeds: [embed],
@@ -151,7 +155,7 @@ module.exports = {
         if (inscritos.includes(userId)) {
           embedReply
             .setColor("NotQuiteBlack")
-            .setDescription("Ya estás participando.");
+            .setDescription("*¡Ya estás participando!*");
         } else {
           inscritos.push(userId);
           fs.writeFileSync(filePath, JSON.stringify(inscritos, null, 2));
@@ -163,8 +167,9 @@ module.exports = {
             .setColor("NotQuiteBlack")
             .setTitle(premio)
             .setDescription(
-              `Finaliza: <t:${finalizaTimestamp}:R> | (<t:${finalizaTimestamp}:D>)\nOrganizado por: ${organizador}\nParticipantes: **${inscritos.length}**\nGanadores: **${numeroGanadores}**`
-            );
+              `Finaliza: <t:${finalizaTimestamp}:R> | (<t:${finalizaTimestamp}:D>)\nOrganizador: <@${organizador}>\nParticipantes: **${inscritos.length}**\nGanadores: **${numeroGanadores}**`
+            )
+            .setFooter({ text: `${fechaFinalizacion}` });
 
           await message.edit({ embeds: [updatedEmbed], components: [row] });
         }
@@ -193,8 +198,11 @@ module.exports = {
         .setColor("NotQuiteBlack")
         .setTitle(premio)
         .setDescription(
-          `Finalizó: <t:${finalizaTimestamp}:R> | (<t:${finalizaTimestamp}:D>)\nOrganizado por: ${organizador}\nParticipantes: **${inscritos.length}**\nGanadores: **${ganadoresMention}**`
-        );
+          `Finalizó: <t:${finalizaTimestamp}:R> | (<t:${finalizaTimestamp}:D>)\nOrganizador: <@${organizador}>\nParticipantes: **${
+            inscritos.length + ganadores.length
+          }**\nGanadores: **${ganadoresMention}**`
+        )
+        .setFooter({ text: `Fecha de finalización: ${fechaFinalizacion}` });
 
       await message.edit({ embeds: [finalEmbed], components: [] });
 

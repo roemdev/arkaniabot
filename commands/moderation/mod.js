@@ -7,11 +7,11 @@ const {
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("mod")
-    .setDescription("Comandos de moderación.")
+    .setDescription("Comandos de moderación")
     .addSubcommand((subcommand) =>
       subcommand
         .setName("ban")
-        .setDescription("Banea al usuario seleccionado.")
+        .setDescription("Banea al usuario seleccionado")
         .addUserOption((option) =>
           option
             .setName("target")
@@ -19,13 +19,13 @@ module.exports = {
             .setRequired(true)
         )
         .addStringOption((option) =>
-          option.setName("reason").setDescription("La razón del baneo.")
+          option.setName("reason").setDescription("Razón")
         )
     )
     .addSubcommand((subcommand) =>
       subcommand
         .setName("kick")
-        .setDescription("Expulsa al usuario seleccionado.")
+        .setDescription("Expulsa al usuario seleccionado")
         .addUserOption((option) =>
           option
             .setName("target")
@@ -33,32 +33,29 @@ module.exports = {
             .setRequired(true)
         )
         .addStringOption((option) =>
-          option.setName("reason").setDescription("Motivo de la expulsión.")
+          option.setName("reason").setDescription("Razón")
         )
     )
     .addSubcommand((subcommand) =>
       subcommand
         .setName("unban")
-        .setDescription("Desbanea a un usuario por su ID.")
+        .setDescription("Desbanea a un usuario por su ID")
         .addStringOption((option) =>
           option
             .setName("user_id")
-            .setDescription("ID del usuario a desbanear.")
+            .setDescription("ID del usuario")
             .setRequired(true)
         )
         .addStringOption((option) =>
           option
             .setName("reason")
-            .setDescription("Razón del desbaneo.")
-            .setRequired(false)
+            .setDescription("Razón")
         )
     )
     .addSubcommand((subcommand) =>
       subcommand
         .setName("warn")
-        .setDescription(
-          "Advierte a un usuario y registra la advertencia en el canal de logs."
-        )
+        .setDescription("Advierte a un usuario")
         .addUserOption((option) =>
           option
             .setName("target")
@@ -66,71 +63,42 @@ module.exports = {
             .setRequired(true)
         )
         .addStringOption((option) =>
-          option.setName("reason").setDescription("La razón de la advertencia.")
+          option.setName("reason").setDescription("Razón")
         )
     )
-    .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
+    .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
     .setDMPermission(false),
 
   async execute(interaction) {
     const subcommand = interaction.options.getSubcommand();
-    const logChannelId = "1256736903672365169"; // Reemplaza con el ID de tu canal de logs
     const target = interaction.options.getUser("target");
-    const reason =
-      interaction.options.getString("reason") ||
-      "No se ha especificado una razón.";
+    const reason = interaction.options.getString("reason") || "No especificada";
 
     if (subcommand === "ban") {
       try {
+        await interaction.guild.members.ban(target, { reason });
         const embed = new EmbedBuilder()
           .setColor("#79E096")
-          .setTitle(" ")
-          .setDescription(
-            `**${target.tag}** ha sido baneado. **Razón:** ${reason}`
-          );
-
-        await interaction.guild.members.ban(target, { reason });
-
-        const logChannel = interaction.guild.channels.cache.get(logChannelId);
-        if (logChannel) {
-          logChannel.send({ embeds: [embed] });
-        } else {
-          console.error("No se encontró el canal con la ID especificada.");
-        }
-
-        await interaction.reply({
-          content: "Usuario baneado :white_check_mark:",
-          ephemeral: true,
-        });
+          .setDescription(`**${target.tag}** ha sido baneado. **Razón:** ${reason}`);
+        await interaction.reply({ embeds: [embed], ephemeral: true });
       } catch (error) {
         console.error("Error al intentar banear al usuario:", error);
-        await interaction.reply({
-          content: "Ocurrió un error al intentar banear al usuario.",
-          ephemeral: true,
-        });
+        await interaction.reply({ content: "Ocurrió un error al intentar banear al usuario.", ephemeral: true });
       }
     } else if (subcommand === "kick") {
+      const memberTarget = interaction.options.getMember("target");
+      if (!memberTarget) {
+        const embed = new EmbedBuilder()
+          .setColor("#F87171")
+          .setDescription("El usuario no se encuentra en el servidor.");
+        return interaction.reply({ embeds: [embed], ephemeral: true });
+      }
       try {
+        await memberTarget.kick(reason);
         const embed = new EmbedBuilder()
           .setColor("#79E096")
-          .setTitle(" ")
-          .setDescription(
-            `**${target.tag}** ha sido *expulsado*. **Razón:** ${reason}`
-          );
-
-        await interaction.guild.members.kick(target, { reason });
-
-        const logChannel = interaction.guild.channels.cache.get(logChannelId);
-        if (logChannel) {
-          logChannel.send({ embeds: [embed] });
-        } else {
-          console.error("No se encontró el canal con la ID especificada.");
-        }
-
-        await interaction.reply({
-          content: "El usuario fue expulsado exitosamente.",
-          ephemeral: true,
-        });
+          .setDescription(`**${target.tag}** ha sido expulsado. **Razón:** ${reason}`);
+        await interaction.reply({ embeds: [embed], ephemeral: true });
       } catch (error) {
         console.error("Error al intentar expulsar al usuario:", error);
         await interaction.reply({
@@ -142,16 +110,21 @@ module.exports = {
       const userId = interaction.options.getString("user_id");
       try {
         const user = await interaction.client.users.fetch(userId);
-        await interaction.guild.bans.remove(user.id, reason);
+        const banList = await interaction.guild.bans.fetch();
+        const bannedUser = banList.get(user.id);
 
+        if (!bannedUser) {
+          const embed = new EmbedBuilder()
+            .setColor("#F87171")
+            .setDescription(`**${user.tag}** no está baneado.`);
+          return interaction.reply({ embeds: [embed], ephemeral: true });
+        }
+
+        await interaction.guild.bans.remove(user.id, reason);
         const embed = new EmbedBuilder()
           .setColor("#79E096")
-          .setTitle(" ")
-          .setDescription(
-            `**${user.tag}** ha sido desbaneado. **Razón:** ${reason}`
-          );
-
-        interaction.channel.send({ embeds: [embed] });
+          .setDescription(`**${user.tag}** ha sido desbaneado. **Razón:** ${reason}`);
+        await interaction.reply({ embeds: [embed], ephemeral: true });
       } catch (error) {
         console.error("Error al desbanear usuario:", error);
         await interaction.reply({
@@ -162,50 +135,23 @@ module.exports = {
     } else if (subcommand === "warn") {
       const memberTarget = interaction.options.getMember("target");
       if (!memberTarget) {
-        return interaction.reply({
-          content: "No se pudo encontrar al miembro especificado.",
-          ephemeral: true,
-        });
+        const embed = new EmbedBuilder()
+          .setColor("#F87171")
+          .setDescription("El usuario no se encuentra en el servidor.");
+        return interaction.reply({ embeds: [embed], ephemeral: true });
       }
-
-      const warnEmbed = new EmbedBuilder()
-        .setColor("#FFC868")
-        .setTitle(" ")
-        .setDescription(
-          `${memberTarget} ha sido advertido. Motivo: **${reason}**`
-        );
-
-      const logEmbed = new EmbedBuilder()
-        .setColor("#FFC868")
-        .setTitle("Usuario Advertido")
-        .addFields(
-          {
-            name: "Usuario",
-            value: `${memberTarget.user.tag} (${memberTarget.id})`,
-            inline: true,
-          },
-          { name: "Moderador", value: `${interaction.user.tag}`, inline: true },
-          { name: "Razón", value: reason, inline: false }
-        )
-        .setTimestamp();
-
       try {
-        await memberTarget.send({ embeds: [warnEmbed] });
-
-        const logChannel = await interaction.guild.channels.fetch(logChannelId);
-        await logChannel.send({ embeds: [logEmbed] });
-
-        await interaction.reply({
-          content: `**${memberTarget.user.tag}** ha sido advertido.`,
-          ephemeral: true,
-        });
+        const embed = new EmbedBuilder()
+          .setColor("#FFC868")
+          .setDescription(`**${memberTarget.user.username}** ha sido advertido. Motivo: **${reason}**`);
+        await interaction.reply({ embeds: [embed], ephemeral: false });
       } catch (error) {
         console.error("Error al intentar advertir al usuario:", error);
         await interaction.reply({
           content: "Ocurrió un error al intentar advertir al usuario.",
           ephemeral: true,
         });
-      }
+      }      
     }
   },
 };

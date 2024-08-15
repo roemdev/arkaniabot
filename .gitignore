@@ -5,3 +5,5 @@ events/ready.js
 archive
 database
 .eslintrc.json
+package.json
+package-lock.json

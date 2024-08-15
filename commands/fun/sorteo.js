@@ -161,7 +161,7 @@ module.exports = {
           fs.writeFileSync(filePath, JSON.stringify(inscritos, null, 2));
           embedReply
             .setColor("#79E096")
-            .setDescription("¡Te has inscrito correctamente!");
+            .setDescription("✅ ¡Te has inscrito correctamente!");
 
           const updatedEmbed = new EmbedBuilder()
             .setColor("NotQuiteBlack")
@@ -179,7 +179,7 @@ module.exports = {
 
     collector.on("end", async () => {
       if (inscritos.length === 0) {
-        await interaction.channel.send("No hay participantes en el sorteo.");
+        await interaction.channel.send("No hubo participantes en el sorteo.");
         return;
       }
 

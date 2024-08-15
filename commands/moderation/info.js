@@ -43,7 +43,9 @@ module.exports = {
     const subcommand = interaction.options.getSubcommand();
     const user = interaction.user.tag;
 
-    console.log(`Comando [ info ] subcomando [ ${subcommand} ] ejecutado por [ ${user} ].`);
+    console.log(
+      `Comando [ info ] subcomando [ ${subcommand} ] ejecutado por [ ${user} ].`
+    );
 
     try {
       if (subcommand === "avatar") {
@@ -56,7 +58,6 @@ module.exports = {
           .setTimestamp();
 
         await interaction.reply({ embeds: [avatarEmbed], ephemeral: false });
-        
       } else if (subcommand === "usuario") {
         const user = interaction.options.getUser("usuario") || interaction.user;
         const member = await interaction.guild.members.fetch(user.id);
@@ -97,7 +98,6 @@ module.exports = {
           .setThumbnail(user.displayAvatarURL({ dynamic: true }));
 
         await interaction.reply({ embeds: [userInfoEmbed], ephemeral: false });
-
       } else if (subcommand === "servidor") {
         const guild = interaction.guild;
 
@@ -123,8 +123,10 @@ module.exports = {
           .setThumbnail(guild.iconURL({ dynamic: true }))
           .setTimestamp();
 
-        await interaction.reply({ embeds: [serverInfoEmbed], ephemeral: false });
-
+        await interaction.reply({
+          embeds: [serverInfoEmbed],
+          ephemeral: false,
+        });
       } else if (subcommand === "ping") {
         const botLatency = Date.now() - interaction.createdTimestamp;
         const apiLatency = interaction.client.ws.ping * 1000;
@@ -140,12 +142,14 @@ module.exports = {
         await interaction.reply({ embeds: [pingEmbed], ephemeral: false });
       }
     } catch (error) {
-      console.error(`Error ejecutando el comando info subcomando [ ${subcommand} ] por ${user}: ${error.message}`);
+      console.error(
+        `Error ejecutando el comando info subcomando [ ${subcommand} ] por ${user}: ${error.message}`
+      );
 
       const errorEmbed = new EmbedBuilder()
         .setColor("#F87171")
         .setTitle(" ")
-        .setDescription("Hubo un error al ejecutar el comando informativo.");
+        .setDescription("Hubo un error al ejecutar este comando.");
 
       await interaction.reply({
         embeds: [errorEmbed],

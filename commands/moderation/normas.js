@@ -44,7 +44,7 @@ module.exports = {
         {
           name: "***`DISCORD`***",
           value:
-            "Cumplir con los [TOS](https://discord.com/terms) y [Guidelines](https://discord.com/guidelines) de Discord.",
+            "Cumplir con [TOS](https://discord.com/terms) y [Guidelines](https://discord.com/guidelines) de Discord.",
           inline: true,
         }
       )

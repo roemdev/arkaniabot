@@ -91,7 +91,7 @@ module.exports = {
       await message.edit({ embeds: [embed], components: [row] });
 
       await interaction.reply({
-        content: "Calificaciones habilitadas",
+        content: "¡Calificaciones habilitadas!",
         ephemeral: true,
       });
 

@@ -47,9 +47,7 @@ module.exports = {
             .setRequired(true)
         )
         .addStringOption((option) =>
-          option
-            .setName("reason")
-            .setDescription("Razón")
+          option.setName("reason").setDescription("Razón")
         )
     )
     .addSubcommand((subcommand) =>
@@ -79,11 +77,16 @@ module.exports = {
         await interaction.guild.members.ban(target, { reason });
         const embed = new EmbedBuilder()
           .setColor("#79E096")
-          .setDescription(`**${target.tag}** ha sido baneado. **Razón:** ${reason}`);
+          .setDescription(
+            `**${target.tag}** ha sido baneado. **Razón:** ${reason}`
+          );
         await interaction.reply({ embeds: [embed], ephemeral: true });
       } catch (error) {
         console.error("Error al intentar banear al usuario:", error);
-        await interaction.reply({ content: "Ocurrió un error al intentar banear al usuario.", ephemeral: true });
+        await interaction.reply({
+          content: "Ocurrió un error al intentar banear al usuario.",
+          ephemeral: true,
+        });
       }
     } else if (subcommand === "kick") {
       const memberTarget = interaction.options.getMember("target");
@@ -97,7 +100,9 @@ module.exports = {
         await memberTarget.kick(reason);
         const embed = new EmbedBuilder()
           .setColor("#79E096")
-          .setDescription(`**${target.tag}** ha sido expulsado. **Razón:** ${reason}`);
+          .setDescription(
+            `**${target.tag}** ha sido expulsado. **Razón:** ${reason}`
+          );
         await interaction.reply({ embeds: [embed], ephemeral: true });
       } catch (error) {
         console.error("Error al intentar expulsar al usuario:", error);
@@ -123,7 +128,9 @@ module.exports = {
         await interaction.guild.bans.remove(user.id, reason);
         const embed = new EmbedBuilder()
           .setColor("#79E096")
-          .setDescription(`**${user.tag}** ha sido desbaneado. **Razón:** ${reason}`);
+          .setDescription(
+            `**${user.tag}** ha sido desbaneado. **Razón:** ${reason}`
+          );
         await interaction.reply({ embeds: [embed], ephemeral: true });
       } catch (error) {
         console.error("Error al desbanear usuario:", error);
@@ -143,15 +150,17 @@ module.exports = {
       try {
         const embed = new EmbedBuilder()
           .setColor("#FFC868")
-          .setDescription(`**${memberTarget.user.username}** ha sido advertido. Motivo: **${reason}**`);
+          .setDescription(
+            `**${memberTarget.user.username}** ha sido advertido. Motivo: **${reason}**`
+          );
         await interaction.reply({ embeds: [embed], ephemeral: false });
       } catch (error) {
-        console.error("Error al intentar advertir al usuario:", error);
+        console.error("Error al intentar advertir al usuario: ", error);
         await interaction.reply({
           content: "Ocurrió un error al intentar advertir al usuario.",
           ephemeral: true,
         });
-      }      
+      }
     }
   },
 };

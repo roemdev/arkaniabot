@@ -30,16 +30,27 @@ Arkania Bot proporciona funcionalidades personalizadas para mejorar la experienc
    ```
 
 2. Navega al directorio del proyecto:
+
    ```bash
    cd arkaniabot
    ```
 
 3. Instala las dependencias:
+
    ```bash
    npm init -y
    ```
 
+   ```bash
+   npm install discord.js
+   ```
+
+   ```bash
+   npm install dotenv
+   ```
+
 4. Crea un archivo `.env` en el directorio raíz y añade tus variables de entorno:
+
    ```
    DISCORD_TOKEN=tu_token_de_discord
    CLIENT_ID=tu_client_id
@@ -48,16 +59,17 @@ Arkania Bot proporciona funcionalidades personalizadas para mejorar la experienc
 
 ## Uso
 
-Carga los comandos en tu servidor
-```
-node deploy-commands.js
-```
+1. Carga los comandos en tu servidor
 
-Inicia el bot utilizando
+   ```bash
+   node deploy-commands.js
+   ```
 
-```
-node index.js
-```
+2. Inicia el bot utilizando
+
+   ```bash
+   node index.js
+   ```
 
 Comandos disponibles:
 

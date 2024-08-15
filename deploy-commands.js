@@ -1,4 +1,4 @@
-require("dotenv").config(); // Cargar variables de entorno
+require("dotenv").config();
 
 const { REST, Routes } = require("discord.js");
 const fs = require("node:fs");

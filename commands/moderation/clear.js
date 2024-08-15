@@ -27,7 +27,7 @@ module.exports = {
         const errorEmbed = new EmbedBuilder()
           .setColor("#F87171")
           .setTitle(" ")
-          .setDescription(`Proporciona un número entre \`1\` y \`99\``);
+          .setDescription(`Proporciona un número entre **\`1\`** y **\`99\`**`);
 
         return interaction.reply({
           embeds: [errorEmbed],
@@ -36,7 +36,7 @@ module.exports = {
       }
 
       await interaction.channel.bulkDelete(amount, true);
-      
+
       const embed = new EmbedBuilder()
         .setColor("#79E096")
         .setTitle(" ")
@@ -44,15 +44,20 @@ module.exports = {
 
       await interaction.reply({ embeds: [embed], ephemeral: true });
 
-      console.log(`Se han eliminado [ ${amount} ] mensajes. Canal: [ ${interaction.channel.name} ]. Usuario: [ ${user} ].`);
-      
+      console.log(
+        `Se han eliminado [ ${amount} ] mensajes. Canal: [ ${interaction.channel.name} ]. Usuario: [ ${user} ].`
+      );
     } catch (error) {
-      console.error(`Error ejecutando el comando clear por ${user}: ${error.message}`);
-      
+      console.error(
+        `Error ejecutando el comando clear por ${user}: ${error.message}`
+      );
+
       const errorEmbed = new EmbedBuilder()
         .setColor("#F87171")
         .setTitle(" ")
-        .setDescription("Hubo un error al intentar borrar los mensajes en este canal.");
+        .setDescription(
+          "Hubo un error al intentar borrar los mensajes en este canal."
+        );
 
       await interaction.reply({
         embeds: [errorEmbed],

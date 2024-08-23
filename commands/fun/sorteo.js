@@ -121,13 +121,18 @@ module.exports = {
       .setStyle(ButtonStyle.Primary)
       .setEmoji("🎉");
 
-    const row = new ActionRowBuilder().addComponents(inscribirmeButton);
+    const termsButton = new ButtonBuilder()
+      .setCustomId("terms")
+      .setLabel("Términos")
+      .setStyle(ButtonStyle.Secondary);
+
+    const row = new ActionRowBuilder().addComponents(inscribirmeButton, termsButton);
 
     const embed = new EmbedBuilder()
       .setColor("NotQuiteBlack")
       .setTitle(premio)
       .setDescription(
-        `Finaliza: <t:${finalizaTimestamp}:R> | (<t:${finalizaTimestamp}:D>)\nOrganizador: <@${organizador}>\nParticipantes: **${inscritos.length}**\nGanadores: **${numeroGanadores}**`
+        `Finaliza: <t:${finalizaTimestamp}:R> | (<t:${finalizaTimestamp}:D>)\nOrganizador: <@${organizador}>\nParticipaciones: **${inscritos.length}**\nGanadores: **${numeroGanadores}**`
       )
       .setFooter({ text: `${fechaFinalizacion}` });
 
@@ -137,11 +142,11 @@ module.exports = {
     });
 
     await interaction.reply({
-      content: "Sorteo creado :white_check_mark:",
+      content: "-# Sorteo creado",
       ephemeral: true,
     });
 
-    const filter = (i) => i.customId === "inscribirme";
+    const filter = (i) => i.customId === "inscribirme" || i.customId === "terms";
     const collector = interaction.channel.createMessageComponentCollector({
       filter,
       time: duracionMs,
@@ -149,25 +154,56 @@ module.exports = {
 
     collector.on("collect", async (i) => {
       const userId = i.user.id;
+      const userRoles = i.member.roles.cache;
       const embedReply = new EmbedBuilder();
 
+      if (i.customId === "terms") {
+        const termsEmbed = new EmbedBuilder()
+          .setColor("NotQuiteBlack")
+          .setTitle("Términos del Sorteo")
+          .setDescription("Para inscribirte en el sorteo necesitarás comprar una entrada.\nSi eres membro VIP tendrás dos participaciones en lugar de una.\nSi eres miembro Diamante tendrás 3.");
+
+        await i.reply({ embeds: [termsEmbed], ephemeral: true });
+        return;
+      }
+
       if (i.customId === "inscribirme") {
+        if (!userRoles.has("1276571444096012298")) {
+          embedReply
+            .setColor("#F87171")
+            .setDescription("Para inscribirte en el sorteo debes de comprar una entrada.");
+          await i.reply({ embeds: [embedReply], ephemeral: true });
+          return;
+        }
+
         if (inscritos.includes(userId)) {
           embedReply
-            .setColor("NotQuiteBlack")
-            .setDescription("*¡Ya estás participando!*");
+            .setColor("#79E096")
+            .setDescription("¡Ya estás participando!");
         } else {
-          inscritos.push(userId);
+          let participaciones = 1;
+
+          if (userRoles.has("1276571474488201323")) {
+            participaciones += 1;
+          }
+          if (userRoles.has("1276571491210887168")) {
+            participaciones += 2;
+          }
+
+          for (let j = 0; j < participaciones; j++) {
+            inscritos.push(userId);
+          }
+
           fs.writeFileSync(filePath, JSON.stringify(inscritos, null, 2));
           embedReply
             .setColor("#79E096")
-            .setDescription("✅ ¡Te has inscrito correctamente!");
+            .setDescription("¡Te has inscrito correctamente!");
 
           const updatedEmbed = new EmbedBuilder()
             .setColor("NotQuiteBlack")
             .setTitle(premio)
             .setDescription(
-              `Finaliza: <t:${finalizaTimestamp}:R> | (<t:${finalizaTimestamp}:D>)\nOrganizador: <@${organizador}>\nParticipantes: **${inscritos.length}**\nGanadores: **${numeroGanadores}**`
+              `Finaliza: <t:${finalizaTimestamp}:R> | (<t:${finalizaTimestamp}:D>)\nOrganizador: <@${organizador}>\nParticipaciones: **${inscritos.length}**\nGanadores: **${numeroGanadores}**`
             )
             .setFooter({ text: `${fechaFinalizacion}` });
 
@@ -183,35 +219,38 @@ module.exports = {
         return;
       }
 
-      const ganadores = [];
-      while (ganadores.length < numeroGanadores && inscritos.length > 0) {
+      const ganadores = new Set(); // Usar un Set para asegurar ganadores únicos
+
+      while (ganadores.size < numeroGanadores && inscritos.length > 0) {
         const randomIndex = Math.floor(Math.random() * inscritos.length);
         const ganadorId = inscritos[randomIndex];
-        ganadores.push(ganadorId);
+        ganadores.add(ganadorId); // Usar el Set para evitar duplicados
         inscritos.splice(randomIndex, 1);
       }
 
-      const ganadoresMention = ganadores.map((id) => `<@${id}>`).join(", ");
+      const ganadoresArray = Array.from(ganadores); // Convertir el Set a Array para facilitar el manejo
+      const ganadoresMention = ganadoresArray.map((id) => `<@${id}>`).join(", ");
 
-      // Actualizar el embed original para dejar de aceptar participaciones
       const finalEmbed = new EmbedBuilder()
         .setColor("NotQuiteBlack")
         .setTitle(premio)
         .setDescription(
-          `Finalizó: <t:${finalizaTimestamp}:R> | (<t:${finalizaTimestamp}:D>)\nOrganizador: <@${organizador}>\nParticipantes: **${
-            inscritos.length + ganadores.length
-          }**\nGanadores: **${ganadoresMention}**`
+          `Finalizó: <t:${finalizaTimestamp}:R> | (<t:${finalizaTimestamp}:D>)\nOrganizador: <@${organizador}>\nParticipaciones: **${inscritos.length + ganadoresArray.length}**\nGanadores: **${ganadoresMention}**`
         )
-        .setFooter({ text: `Fecha de finalización: ${fechaFinalizacion}` });
+        .setFooter({ text: `${fechaFinalizacion}` });
 
       await message.edit({ embeds: [finalEmbed], components: [] });
 
-      // Enviar el mensaje final con los ganadores
-      await interaction.channel.send(
-        `¡Felicidades ${ganadoresMention}! ¡Ganaron el sorteo!`
-      );
+      if (numeroGanadores == 1) {
+        winnerMsg = `¡Felicidades ${ganadoresMention}! ¡Eres has ganado el sorteo!`
+      } else {
+        winnerMsg = `¡Felicidades ${ganadoresMention}! ¡Son lo ganadores del sorteo!`
+      }
+
+      await interaction.channel.send(winnerMsg);
 
       fs.writeFileSync(filePath, "[]");
     });
+
   },
 };

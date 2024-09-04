@@ -9,6 +9,7 @@ const client = new Client({
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.GuildVoiceStates,
     GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMembers,
   ],
 });
 
@@ -16,6 +17,7 @@ client.commands = new Collection();
 const commandsPath = path.join(__dirname, "commands");
 const commandFilesAndFolders = fs.readdirSync(commandsPath);
 
+// Carga de comandos
 for (const item of commandFilesAndFolders) {
   const itemPath = path.join(commandsPath, item);
   if (fs.statSync(itemPath).isDirectory()) {
@@ -45,6 +47,7 @@ for (const item of commandFilesAndFolders) {
   }
 }
 
+// Carga de eventos
 const eventsPath = path.join(__dirname, "events");
 const eventFiles = fs
   .readdirSync(eventsPath)
@@ -60,4 +63,4 @@ for (const file of eventFiles) {
   }
 }
 
-client.login(process.env.BOT_TOKEN); //
+client.login(process.env.BOT_TOKEN);

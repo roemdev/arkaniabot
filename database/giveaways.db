@@ -1,0 +1,10 @@
+CREATE TABLE giveaways (
+    id SERIAL PRIMARY KEY,
+    message_id TEXT NOT NULL,
+    role_required TEXT,
+    role_multiplier TEXT,
+    end_timestamp BIGINT NOT NULL,
+    prize TEXT NOT NULL,
+    winners_qty INTEGER NOT NULL,
+    entries JSONB DEFAULT '[]'
+);

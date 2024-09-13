@@ -21,9 +21,9 @@ module.exports = {
   .setFooter({ text: `Ahora somos ${member.guild.memberCount} miembros. ¡Disfruta tu estancia!` });
 
     // Enviar el mensaje de bienvenida en el canal designado
-    const welcomeChannel = member.guild.channels.cache.get("1173781298721063014");
+    const welcomeChannel = member.guild.channels.cache.get("1273453941056602152");
     if (welcomeChannel) {
-      welcomeChannel.send({ embeds: [welcomeEmbed] });
+      welcomeChannel.send({ content: `<@${member.user.id}>`, embeds: [welcomeEmbed] });
     }
 
     // Asigna el rol correspondiente

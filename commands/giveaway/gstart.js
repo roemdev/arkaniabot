@@ -120,7 +120,7 @@ module.exports = {
     });
 
     await interaction.reply({
-      content: "✅ Sorteo creado.",
+      content: "<:check:1286772042657566780> Sorteo creado.",
       ephemeral: true,
     });
 
@@ -161,7 +161,7 @@ module.exports = {
           .setColor("NotQuiteBlack")
           .setTitle("Términos del Sorteo")
           .setDescription(
-            "Para inscribirte en el sorteo necesitarás comprar una entrada.\nSi eres miembro VIP tendrás dos entriesQty en lugar de una.\nSi eres miembro Diamante tendrás 3."
+            "N/D"
           );
 
         await i.reply({ embeds: [termsEmbed], ephemeral: true });
@@ -174,15 +174,15 @@ module.exports = {
         if (roleRequired && !userRoles.has(roleRequired)) {
           embedReply
             .setColor("#F87171")
-            .setDescription("Para inscribirte en el sorteo debes tener el rol necesario.");
+            .setDescription("<:decline:1286772064765743197> Para inscribirte en el sorteo debes comprar una inscripción.");
           await i.reply({ embeds: [embedReply], ephemeral: true });
           return;
         }
 
         if (entries.includes(userId)) {
           embedReply
-            .setColor("#79E096")
-            .setDescription("¡Ya estás participando!");
+            .setColor("#FFC868")
+            .setDescription("<:info:1286772089046700094> ¡Ya estás participando!");
         } else {
           
           // Calculate entriesQty based on roles
@@ -196,7 +196,7 @@ module.exports = {
           fs.writeFileSync(filePath, JSON.stringify(entries, null, 2));
           embedReply
             .setColor("#79E096")
-            .setDescription("¡Te has inscrito correctamente!");
+            .setDescription("<:check:1286772042657566780> ¡Te has inscrito correctamente!");
 
           // Update embed message
           const updatedEmbed = new EmbedBuilder()

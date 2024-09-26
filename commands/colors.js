@@ -13,9 +13,9 @@ module.exports = {
       { label: 'Banana', value: '1288966791892176907', emoji: '🍌' },
       { label: 'Arándano', value: '1288966797051166854', emoji: '🫐' },
       { label: 'Uva', value: '1288966794115289308', emoji: '🍇' },
-      { label: 'Sandía', value: '1288966778965327893', emoji: '🍉' },
+      { label: 'Sandía', value: '1288966794605760604', emoji: '🍉' },
       { label: 'Pera', value: '1288966774829744180', emoji: '🍐' },
-      { label: 'Cacahuate', value: '1288966783167893514', emoji: '🥜' },
+      { label: 'Cacahuate', value: '1288966795868373002', emoji: '🥜' },
       { label: 'Bola 8', value: '1288968686954221651', emoji: '🎱' },
       { label: 'Remover color', value: 'none', emoji: '❌' }
     ];

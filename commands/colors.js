@@ -16,7 +16,6 @@ module.exports = {
       { label: 'Sandía', value: '1288966778965327893', emoji: '🍉' },
       { label: 'Pera', value: '1288966774829744180', emoji: '🍐' },
       { label: 'Cacahuate', value: '1288966783167893514', emoji: '🥜' },
-      { label: 'Coco', value: '1288966794928722001', emoji: '🥥' },
       { label: 'Bola 8', value: '1288968686954221651', emoji: '🎱' },
       { label: 'Remover color', value: 'none', emoji: '❌' }
     ];
@@ -41,10 +40,9 @@ module.exports = {
         { name: ' ', value: '<@&1288966791892176907> - <@&1288966771801591899>', inline: true },
         { name: ' ', value: '<@&1288966797051166854> - <@&1288966785319698524>', inline: true },
         { name: ' ', value: '<@&1288966794115289308> - <@&1288966776692146227>', inline: true },
-        { name: ' ', value: '<@&1288966778965327893> - <@&1288966778965327893>', inline: true },
+        { name: ' ', value: '<@&1288966794605760604> - <@&1288966778965327893>', inline: true },
         { name: ' ', value: '<@&1288966774829744180> - <@&1288966774829744180>', inline: true },
         { name: ' ', value: '<@&1288966783167893514> - <@&1288966783167893514>', inline: true },
-        { name: ' ', value: '<@&1288966794928722001> - <@&1288966780924203008>', inline: true },
         { name: ' ', value: '<@&1288968686954221651> - <@&1288968694931787881>', inline: true },
       )
       .setImage('https://cdn.discordapp.com/attachments/1273453941056602152/1288964066689421354/SORTEO.png?ex=66f718d5&is=66f5c755&hm=2c0f2002e7d2b5eba60d76ad6f88d892b433698f0ced5eb93b73240be88b79a2&');

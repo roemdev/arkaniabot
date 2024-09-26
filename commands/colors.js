@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, ActionRowBuilder, StringSelectMenuBuilder, EmbedBuilder } = require('discord.js');
+const { compileFunction } = require('vm');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -7,17 +8,17 @@ module.exports = {
 
   async execute(interaction) {
     const roles = [
-      { label: 'Rojo', value: '1285988483361673279', emoji: '🔴' },
-      { label: 'Azul', value: '1285988490047393882', emoji: '🔵' },
-      { label: 'Verde', value: '1285988490735259729', emoji: '🟢' },
-      { label: 'Amarillo', value: '1287041701260820532', emoji: '🟡' },
-      { label: 'Morado', value: '1287041708684611667', emoji: '🟣' },
-      { label: 'Naranja', value: '1287041710538489960', emoji: '🟠' },
-      { label: 'Rosa', value: '1287041711188607088', emoji: '🌸' },
-      { label: 'Cian', value: '1287041713608724544', emoji: '🔵' },
-      { label: 'Negro', value: '1287042916363272203', emoji: '⚫' },
-      // Añadimos la opción "Ninguno"
-      { label: 'Ninguno', value: 'none', emoji: '❌' }
+      { label: 'Manzana', value: '1288966787160870922', emoji: '🍎' },
+      { label: 'Mandarina', value: '1288966789698424832', emoji: '🍊' },
+      { label: 'Banana', value: '1288966791892176907', emoji: '🍌' },
+      { label: 'Arándano', value: '1288966797051166854', emoji: '🫐' },
+      { label: 'Uva', value: '1288966794115289308', emoji: '🍇' },
+      { label: 'Sandía', value: '1288966778965327893', emoji: '🍉' },
+      { label: 'Pera', value: '1288966774829744180', emoji: '🍐' },
+      { label: 'Cacahuate', value: '1288966783167893514', emoji: '🥜' },
+      { label: 'Coco', value: '1288966794928722001', emoji: '🥥' },
+      { label: 'Bola 8', value: '1288968686954221651', emoji: '🎱' },
+      { label: 'Remover color', value: 'none', emoji: '❌' }
     ];
 
     const selectMenu = new StringSelectMenuBuilder()
@@ -33,10 +34,20 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setColor('NotQuiteBlack')
-      .setTitle('Elige tu color de rol')
-      .setDescription(
-        roles.map(role => `${role.emoji} - <@&${role.value}>`).join('\n').replace('<@&none>', '❌ - Ninguno')
-      );
+      .setTitle('¡Dale color a tu nombre!')
+      .addFields(
+        { name: ' ', value: '<@&1288966787160870922> - <@&1288966766566969447>', inline: true },
+        { name: ' ', value: '<@&1288966789698424832> - <@&1288966769393795114>', inline: true },
+        { name: ' ', value: '<@&1288966791892176907> - <@&1288966771801591899>', inline: true },
+        { name: ' ', value: '<@&1288966797051166854> - <@&1288966785319698524>', inline: true },
+        { name: ' ', value: '<@&1288966794115289308> - <@&1288966776692146227>', inline: true },
+        { name: ' ', value: '<@&1288966778965327893> - <@&1288966778965327893>', inline: true },
+        { name: ' ', value: '<@&1288966774829744180> - <@&1288966774829744180>', inline: true },
+        { name: ' ', value: '<@&1288966783167893514> - <@&1288966783167893514>', inline: true },
+        { name: ' ', value: '<@&1288966794928722001> - <@&1288966780924203008>', inline: true },
+        { name: ' ', value: '<@&1288968686954221651> - <@&1288968694931787881>', inline: true },
+      )
+      .setImage('https://cdn.discordapp.com/attachments/1273453941056602152/1288964066689421354/SORTEO.png?ex=66f718d5&is=66f5c755&hm=2c0f2002e7d2b5eba60d76ad6f88d892b433698f0ced5eb93b73240be88b79a2&');
 
     await interaction.reply({ embeds: [embed], components: [row], ephemeral: false });
 
@@ -49,6 +60,10 @@ module.exports = {
 
         const roleIds = roles.map(role => role.value).filter(value => value !== 'none'); // Excluir "none"
 
+        const confirmEmbed = new EmbedBuilder()
+          .setColor('#79E096')
+          .setDescription(`<:check:1286772042657566780> ¡Te pinté de color <@&${selectedRole}>!`);
+
         if (selectedRole === 'none') {
           // Si se selecciona "Ninguno", eliminamos todos los roles de color
           const rolesToRemove = member.roles.cache.filter(role => roleIds.includes(role.id));
@@ -60,18 +75,15 @@ module.exports = {
             await member.roles.remove(selectedRole);
             await i.reply({ content: `El rol <@&${selectedRole}> ha sido removido.`, ephemeral: true });
           } else {
-            // Remover solo los roles de color, pero no afectar otros roles del usuario
             const rolesToRemove = member.roles.cache.filter(role => roleIds.includes(role.id));
             await member.roles.remove(rolesToRemove);
 
             // Asignar el nuevo rol
             await member.roles.add(selectedRole);
-            await i.reply({ content: `Se te ha asignado el rol <@&${selectedRole}>.`, ephemeral: true });
+            await i.reply({ embeds: [confirmEmbed], ephemeral: true });
           }
         }
       }
     });
-
-    collector.on('end', collected => console.log(`Se recogieron ${collected.size} interacciones.`));
   },
 };

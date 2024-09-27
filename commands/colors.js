@@ -1,5 +1,4 @@
 const { SlashCommandBuilder, ActionRowBuilder, StringSelectMenuBuilder, EmbedBuilder } = require('discord.js');
-const { compileFunction } = require('vm');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -48,40 +47,5 @@ module.exports = {
       .setImage('https://cdn.discordapp.com/attachments/1273453941056602152/1288964066689421354/SORTEO.png?ex=66f718d5&is=66f5c755&hm=2c0f2002e7d2b5eba60d76ad6f88d892b433698f0ced5eb93b73240be88b79a2&');
 
     await interaction.channel.send({ embeds: [embed], components: [row], ephemeral: false });
-
-    const collector = interaction.channel.createMessageComponentCollector({ componentType: 3, time: 60000 });
-
-    collector.on('collect', async i => {
-      if (i.customId === 'select-color-role') {
-        const selectedRole = i.values[0];
-        const member = await i.guild.members.fetch(i.user.id);
-
-        const roleIds = roles.map(role => role.value).filter(value => value !== 'none'); // Excluir "none"
-
-        const confirmEmbed = new EmbedBuilder()
-          .setColor('#79E096')
-          .setDescription(`<:check:1286772042657566780> ¡Te pinté de color <@&${selectedRole}>!`);
-
-        if (selectedRole === 'none') {
-          // Si se selecciona "Ninguno", eliminamos todos los roles de color
-          const rolesToRemove = member.roles.cache.filter(role => roleIds.includes(role.id));
-          await member.roles.remove(rolesToRemove);
-          await i.reply({ content: 'Se han eliminado todos los roles de color.', ephemeral: true });
-        } else {
-          // Si el miembro ya tiene el rol seleccionado, lo removemos
-          if (member.roles.cache.has(selectedRole)) {
-            await member.roles.remove(selectedRole);
-            await i.reply({ content: `El rol <@&${selectedRole}> ha sido removido.`, ephemeral: true });
-          } else {
-            const rolesToRemove = member.roles.cache.filter(role => roleIds.includes(role.id));
-            await member.roles.remove(rolesToRemove);
-
-            // Asignar el nuevo rol
-            await member.roles.add(selectedRole);
-            await i.reply({ embeds: [confirmEmbed], ephemeral: true });
-          }
-        }
-      }
-    });
   },
 };

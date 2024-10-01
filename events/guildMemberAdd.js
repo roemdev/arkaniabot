@@ -8,7 +8,7 @@ module.exports = {
     const isBot = member.user.bot;
     const roleUser = member.guild.roles.cache.find(role => role.id === "1215767915329228890");
     const roleBot = member.guild.roles.cache.find(role => role.id === "1211736684190769274");
-    const welcomeChannel = member.guild.channels.cache.get("1273453941056602152");
+    const welcomeChannel = member.guild.channels.cache.get("1173781298721063014");
 
     // Asignar roles según si es bot o usuario
     if (isBot && roleBot) {

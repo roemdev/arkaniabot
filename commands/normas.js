@@ -1,59 +1,41 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { EmbedBuilder, Embed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("normas")
     .setDescription("Envía las normas de Arkania."),
+  
   async execute(interaction) {
-    const embed = new EmbedBuilder()
+    
+    const embedTitle = new EmbedBuilder()
       .setColor("NotQuiteBlack")
-      .setTitle("📝 Normas de Arkania")
+      .setTitle("NORMAS")
+      .setImage('https://cdn.discordapp.com/attachments/860528686403158046/1108384769147932682/ezgif-2-f41b6758ff.gif?ex=672b6e41&is=672a1cc1&hm=27d52116de757eacda18b0d5cecfcf1f9eab6bf11c5119bc305349820367e871&');
+
+    const embedDesc = new EmbedBuilder()
+      .setColor("NotQuiteBlack")
       .setDescription(" ")
       .addFields(
-        {
-          name: "***`NSFW`***",
-          value:
-            "El contenido NSFW (para adultos) está estrictamente prohibido en todos los canales.",
-          inline: true,
-        },
-        {
-          name: "***`PUBLICIDAD`***",
-          value:
-            "Queda prohibida cualquier forma de publicidad de otros servidores.",
-          inline: true,
-        },
-        {
-          name: "***`SPAM`***",
-          value:
-            "No se permite enviar mensajes rápidamente con la intención de interrumpir el chat.",
-          inline: true,
-        },
-        {
-          name: "***`ACOSO`***",
-          value:
-            "Se prohíbe cualquier forma de acoso, incluido el chantaje, compartir o filtrar información personal.",
-          inline: true,
-        },
-        {
-          name: "***`PIRATERÍA`***",
-          value:
-            "No se permite compartir o promover software pirata, cracks, keygens, o cualquier otro contenido ilegal.",
-          inline: true,
-        },
-        {
-          name: "***`DISCORD`***",
-          value:
-            "Cumplir con [TOS](https://discord.com/terms) y [Guidelines](https://discord.com/guidelines) de Discord.",
-          inline: true,
-        }
+        { name: "***`NSFW`***", value: "El contenido NSFW (para adultos) está estrictamente prohibido en todos los canales." },
+        { name: "***`PUBLICIDAD`***", value: "Queda prohibida cualquier forma de publicidad de otros servidores." },
+        { name: "***`SPAM`***", value: "No se permite enviar mensajes rápidamente con la intención de interrumpir el chat." },
+        { name: "***`ACOSO`***", value: "Se prohíbe cualquier forma de acoso, incluido el chantaje, compartir o filtrar información personal." },
+        { name: "***`PIRATERÍA`***", value: "No se permite compartir software pirata, cracks, keygens, o cualquier otro contenido ilegal." },
+        { name: "***`DISCORD`***", value: "Cumplir con [TOS](https://discord.com/terms) y [Guidelines](https://discord.com/guidelines) de Discord." }
       )
-      .setFooter({
-        text: "Normas actualizadas el 28/6/2024",
-        iconURL:
-          "https://images-ext-1.discordapp.net/external/aJTLXHYnpDaR7e-fXhmFwyeJpSw0b1Xhq9pwQfq_xW4/%3Fsize%3D512/https/cdn.discordapp.com/avatars/271683421065969664/39b66b422ceda77990cbe52d4e794e4f.webp?format=webp",
-      });
+      .setImage('https://cdn.discordapp.com/attachments/860528686403158046/1108384769147932682/ezgif-2-f41b6758ff.gif?ex=672b6e41&is=672a1cc1&hm=27d52116de757eacda18b0d5cecfcf1f9eab6bf11c5119bc305349820367e871&');
 
-    await interaction.reply({ embeds: [embed], ephemeral: false });
+    const embedLvlTitle = new EmbedBuilder()
+      .setColor("NotQuiteBlack")
+      .setTitle("ROLES POR NIVEL")
+      .setImage('https://cdn.discordapp.com/attachments/860528686403158046/1108384769147932682/ezgif-2-f41b6758ff.gif?ex=672b6e41&is=672a1cc1&hm=27d52116de757eacda18b0d5cecfcf1f9eab6bf11c5119bc305349820367e871&');
+
+    const embedLvlDesc = new EmbedBuilder()
+      .setColor("NotQuiteBlack")
+      .setDescription("`⬆️` <@&1284145913354522685>\n`⬆️` <@&1234893710588645426>\n`⬆️` <@&1284145958149554309>\n`⬆️` <@&1251306364878458931>\n`⬆️` <@&1247699315908935680>")
+      .setImage('https://cdn.discordapp.com/attachments/860528686403158046/1108384769147932682/ezgif-2-f41b6758ff.gif?ex=672b6e41&is=672a1cc1&hm=27d52116de757eacda18b0d5cecfcf1f9eab6bf11c5119bc305349820367e871&');
+
+    await interaction.reply({ embeds: [embedTitle, embedDesc, embedLvlTitle, embedLvlDesc], ephemeral: false });
   },
 };

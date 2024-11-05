@@ -141,7 +141,7 @@ module.exports = {
     await interaction.reply({ embeds: [replyEmbed], ephemeral: true, });
 
     // Clear previous entries
-    clearEntries(); // Limpiar las participaciones
+    clearEntries();
 
     // Save giveaway info in JSON
     const giveawayData = {

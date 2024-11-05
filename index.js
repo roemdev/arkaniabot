@@ -85,7 +85,6 @@ for (const file of eventFiles) {
 
     console.log(`Successfully reloaded ${data.length} application (/) commands.`);
 
-    // Iniciar sesión en Discord después de registrar los comandos
     client.login(token);
   } catch (error) {
     console.error(error);

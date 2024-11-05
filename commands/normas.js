@@ -7,7 +7,6 @@ module.exports = {
     .setDescription("Envía las normas de Arkania."),
   
   async execute(interaction) {
-    
     const embedTitle = new EmbedBuilder()
       .setColor("NotQuiteBlack")
       .setTitle("NORMAS")
@@ -36,6 +35,10 @@ module.exports = {
       .setDescription("`⬆️` <@&1284145913354522685>\n`⬆️` <@&1234893710588645426>\n`⬆️` <@&1284145958149554309>\n`⬆️` <@&1251306364878458931>\n`⬆️` <@&1247699315908935680>")
       .setImage('https://cdn.discordapp.com/attachments/860528686403158046/1108384769147932682/ezgif-2-f41b6758ff.gif?ex=672b6e41&is=672a1cc1&hm=27d52116de757eacda18b0d5cecfcf1f9eab6bf11c5119bc305349820367e871&');
 
-    await interaction.reply({ embeds: [embedTitle, embedDesc, embedLvlTitle, embedLvlDesc], ephemeral: false });
+    // Enviar el mensaje al canal en lugar de responder a la interacción
+    await interaction.channel.send({ embeds: [embedTitle, embedDesc, embedLvlTitle, embedLvlDesc] });
+
+    // Confirmar la ejecución de la interacción para evitar errores
+    await interaction.reply({ content: "Normas enviadas.", ephemeral: true });
   },
 };

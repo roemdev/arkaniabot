@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require("discord.js");
 
-const MAX_MEMBERS_PER_TEAM = 6; // Máximo de miembros por equipo
+const MAX_MEMBERS_PER_TEAM = 5; // Máximo de miembros por equipo
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -48,14 +48,20 @@ module.exports = {
       });
     }
 
-    const buttons = new ActionRowBuilder().addComponents(
-      roles.map(role =>
-        new ButtonBuilder()
-          .setCustomId(`team_${role.id}`)
-          .setLabel(`Unirme a ${role.name}`)
-          .setStyle(ButtonStyle.Secondary)
-      )
-    );
+    // Función para generar botones actualizados
+    const generateButtons = () => {
+      return new ActionRowBuilder().addComponents(
+        roles.map(role => {
+          const membersInRole = role.members.size;
+          const availableSpots = MAX_MEMBERS_PER_TEAM - membersInRole;
+          return new ButtonBuilder()
+            .setCustomId(`team_${role.id}`)
+            .setLabel(`${role.name} (${membersInRole}/${MAX_MEMBERS_PER_TEAM})`)
+            .setStyle(ButtonStyle.Secondary)
+            .setDisabled(availableSpots <= 0); // Deshabilitar el botón si el equipo está lleno
+        })
+      );
+    };
 
     const embed = new EmbedBuilder()
       .setColor("NotQuiteBlack")
@@ -64,16 +70,16 @@ module.exports = {
       .addFields({ name: '¿Qué es el CLASH?', value: '> El Clash es un torneo dentro de League of Legends donde los equipos compiten en un formato organizado. Es una gran oportunidad para demostrar tus habilidades y disfrutar del juego en equipo.' })
       .addFields({ name: '¿Cómo funciona esta categoría?', value: '> Primero debes elegir el equipo en el que deseas participar (haz clic en los botones debajo). Una vez elijas tu equipo, tendrás acceso a sus canales exclusivos de texto y voz. Estos canales serán tu espacio para coordinar estrategias y comunicarte con tu equipo.' })
       .setImage("https://static.wikia.nocookie.net/leagueoflegends/images/d/d2/Clash_Title.png/revision/latest/scale-to-width-down/1000?cb=20190601061810")
-      .setFooter({ text: '¿No hay más cupos? Solicita un nuevo equipo con Jedoth' })
+      .setFooter({ text: '¿No hay más cupos? Solicita un nuevo equipo con Jedoth' });
 
     // Enviar el mensaje público con botones
-    const mainMessage = await channel.send({ embeds: [embed], components: [buttons] });
+    const mainMessage = await channel.send({ embeds: [embed], components: [generateButtons()] });
 
     // Configurar el colector de interacciones
     const filter = (i) =>
-      roles.some(role => i.customId === `team_${role.id}`) ||
-      i.customId.startsWith("abandon_") ||
-      i.customId.startsWith("confirm_");
+      roles.some(role => i.customId === `team_${role.id}`) || // Interacción con los botones de equipos
+      i.customId.startsWith("abandon_") || // Interacción para abandonar un equipo
+      i.customId.startsWith("confirm_");  // Interacción para confirmar cambio de equipo
 
     const collector = channel.createMessageComponentCollector({ filter, time: 0 });
 
@@ -127,7 +133,10 @@ module.exports = {
         embedReply
           .setColor("#79E096")
           .setDescription(`<:check:1286772042657566780> ¡Te has unido al equipo **${clickedRole.name}**! (${membersInRole + 1}/${MAX_MEMBERS_PER_TEAM})`);
-        return await i.reply({ embeds: [embedReply], ephemeral: true });
+        await i.reply({ embeds: [embedReply], ephemeral: true });
+
+        // Actualizar los botones con los nuevos cupos
+        await mainMessage.edit({ components: [generateButtons()] });
       } else if (i.customId.startsWith("abandon_")) {
         const targetRoleId = i.customId.split("_")[1];
         const targetRole = roles.find(role => role.id === targetRoleId);
@@ -143,7 +152,11 @@ module.exports = {
         embedReply
           .setColor("#79E096")
           .setDescription(`<:check:1286772042657566780> Has abandonado el equipo **${targetRole.name}**.`);
-        return await i.reply({ embeds: [embedReply], ephemeral: true });
+
+        await i.reply({ embeds: [embedReply], ephemeral: true });
+
+        // Actualizar los botones con los nuevos cupos
+        await mainMessage.edit({ components: [generateButtons()] });
       } else if (i.customId.startsWith("confirm_")) {
         const targetRoleId = i.customId.split("_")[1];
         const targetRole = roles.find(role => role.id === targetRoleId);
@@ -162,7 +175,11 @@ module.exports = {
         embedReply
           .setColor("#79E096")
           .setDescription(`<:check:1286772042657566780> Has cambiado al equipo **${targetRole.name}**. (${membersInRole + 1}/${MAX_MEMBERS_PER_TEAM})`);
-        return await i.reply({ embeds: [embedReply], ephemeral: true });
+
+        await i.reply({ embeds: [embedReply], ephemeral: true });
+
+        // Actualizar los botones con los nuevos cupos
+        await mainMessage.edit({ components: [generateButtons()] });
       }
     });
   },

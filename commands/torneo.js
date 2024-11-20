@@ -1,22 +1,21 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
-// 1239927731169267763
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('torneo')
         .setDescription('Envía el embed de inscripción al torneo para todos los miembros.'),
     async execute(interaction) {
-        // Confirmar que el comando fue ejecutado correctamente
+        // Confirmar ejecución del comando
         const confirmationEmbed = new EmbedBuilder()
             .setColor('#79E096')
             .setDescription('<:check:1286772042657566780> El comando para el torneo fue enviado con éxito.');
 
         await interaction.reply({ embeds: [confirmationEmbed], ephemeral: true });
 
-        // Crear el embed para el torneo
-        const embed = new EmbedBuilder()
+        // Embed principal del torneo
+        const torneoEmbed = new EmbedBuilder()
             .setColor("NotQuiteBlack")
             .setTitle('🏆 ARKANIA RIFT')
             .setDescription('¿Estás listo para enfrentarte a los mejores y demostrar tu supremacía en el Puente del Progreso? Inscríbete ahora y únete a esta épica contienda donde cada jugada cuenta y solo el más fuertes llegará a la cima. ¡No dejes que te lo cuenten, haz historia en ARKANIA RIFT! ¿Tienes lo que se necesita para ganar? **¡Este es tu momento!**')
@@ -25,14 +24,12 @@ module.exports = {
                 { name: 'Criterios', value: '¿Zaun o Piltóver? Aplasta a tu rival en el Puente del Progreso ARAM en un `1 VS 1` con un campeón significativo de tu lado.' },
                 { name: 'Premios', value: 'Compite en este gran torneo y vive al máximo la experiencia Arcane ganando el **Pase de Batalla de Arcane**.' }
             )
-            .setImage(
-                'https://cdn.discordapp.com/attachments/1273453941056602152/1308266912484167751/SORTEO_2.png'
-            );
+            .setImage('https://i.imgur.com/cUq8oRq.png');
 
         const row = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
                 .setCustomId('inscribirme')
-                .setLabel('¡Inscríbeme!')
+                .setLabel('Inscribirme')
                 .setStyle(ButtonStyle.Primary),
             new ButtonBuilder()
                 .setCustomId('faq')
@@ -40,20 +37,16 @@ module.exports = {
                 .setStyle(ButtonStyle.Secondary)
         );
 
-        // Enviar mensaje con embed y botones
-        await interaction.channel.send({ embeds: [embed], components: [row] });
+        // Enviar el embed del torneo
+        await interaction.channel.send({ embeds: [torneoEmbed], components: [row] });
 
-        // Crear filtro y recolector
+        // Recolector de botones
         const filter = (i) => ['inscribirme', 'faq'].includes(i.customId);
-        const collector = interaction.channel.createMessageComponentCollector({
-            filter,
-            time: 600000,
-        });
+        const collector = interaction.channel.createMessageComponentCollector({ filter, time: 0 });
 
-        // Manejar interacciones con los botones
         collector.on('collect', async (i) => {
             if (i.customId === 'inscribirme') {
-                // Modal para inscripción
+                // Abrir modal
                 const modal = new ModalBuilder()
                     .setCustomId('modal_inscripcion')
                     .setTitle('Formulario de inscripción')
@@ -61,9 +54,7 @@ module.exports = {
                         new ActionRowBuilder().addComponents(
                             new TextInputBuilder()
                                 .setCustomId('nombre_invocador')
-                                .setLabel(
-                                    'Nombre de invocador (Ej. MataMoscas#7842)'
-                                )
+                                .setLabel('Nombre de invocador (Ej. MataMoscas#7842)')
                                 .setStyle(TextInputStyle.Short)
                                 .setRequired(true)
                         )
@@ -71,11 +62,10 @@ module.exports = {
 
                 await i.showModal(modal);
             } else if (i.customId === 'faq') {
-                // Embed de FAQ
                 const faqEmbed = new EmbedBuilder()
                     .setColor('#FFC868')
                     .setTitle('Preguntas Frecuentes (FAQ)')
-                    .setDescription('Respuestas a las preguntas más comunes:')
+                    .setDescription('Respuestas a las preguntas más comunes.')
                     .addFields(
                         {
                             name: '¿Cómo puedo inscribirme al torneo?',
@@ -119,41 +109,30 @@ module.exports = {
             }
         });
 
-        // Escuchar eventos para el modal de inscripción
+        // Manejar el envío de modales
         const client = interaction.client;
+
         if (!client.modalEventRegistered) {
-            client.modalEventRegistered = true; // Evitar múltiples registros
+            client.modalEventRegistered = true;
 
             client.on('interactionCreate', async (modalInteraction) => {
-                if (
-                    !modalInteraction.isModalSubmit() ||
-                    modalInteraction.customId !== 'modal_inscripcion'
-                )
-                    return;
+                if (!modalInteraction.isModalSubmit() || modalInteraction.customId !== 'modal_inscripcion') return;
 
-                // Confirmar que los datos fueron enviados correctamente
-                const nombreInvocador = modalInteraction.fields.getTextInputValue(
-                    'nombre_invocador'
-                );
+                const nombreInvocador = modalInteraction.fields.getTextInputValue('nombre_invocador');
 
-                const confirmationModalEmbed = new EmbedBuilder()
+                const confirmationEmbed = new EmbedBuilder()
                     .setColor('#79E096')
-                    .setDescription(
-                        '<:check:1286772042657566780> Tu solicitud de inscripción ha sido enviada correctamente y estará siendo revisada. Te informaré pronto.'
-                    );
+                    .setDescription('<:check:1286772042657566780> Tu solicitud de inscripción ha sido enviada correctamente. Pronto recibirás una respuesta.');
 
-                await modalInteraction.reply({
-                    embeds: [confirmationModalEmbed],
-                    ephemeral: true,
-                });
+                await modalInteraction.reply({ embeds: [confirmationEmbed], ephemeral: true });
 
-                const embedValidacion = new EmbedBuilder()
+                // Crear embed de validación
+                const validacionEmbed = new EmbedBuilder()
                     .setColor('#FFC868')
-                    .setTitle('Solicitud de inscripción al torneo')
-                    .setDescription(' ')
+                    .setTitle('Nueva solicitud de inscripción')
                     .addFields(
                         { name: 'Invocador', value: nombreInvocador, inline: true },
-                        { name: 'Discord', value: `<@${modalInteraction.user.id}>`, inline: true }
+                        { name: 'Usuario', value: `<@${modalInteraction.user.id}>`, inline: true }
                     );
 
                 const rowValidacion = new ActionRowBuilder().addComponents(
@@ -167,112 +146,82 @@ module.exports = {
                         .setStyle(ButtonStyle.Danger)
                 );
 
-                const validacionChannel = await client.channels
-                    .fetch('1308660007113330698')
-                    .catch(() => null);
+                const validacionChannel = await client.channels.fetch('1308660007113330698').catch(() => null);
 
-                if (!validacionChannel) {
-                    return modalInteraction.reply({
-                        embeds: [
-                            new EmbedBuilder()
-                                .setColor('#F87171')
-                                .setDescription(
-                                    '<:decline:1286772064765743197> No se pudo enviar tu inscripción para revisión.'
-                                ),
-                        ],
-                        ephemeral: true,
-                    });
-                }
+                if (!validacionChannel) return;
 
-                const validationMessage = await validacionChannel.send({
-                    embeds: [embedValidacion],
+                const mensajeValidacion = await validacionChannel.send({
+                    embeds: [validacionEmbed],
                     components: [rowValidacion],
                 });
 
-                // Bloquear los botones después de la interacción
-                const filter = (i) =>
-                    ['aprobar', 'denegar'].includes(i.customId) &&
-                    i.message.id === validationMessage.id;
                 const collector = validacionChannel.createMessageComponentCollector({
-                    filter,
-                    time: 600000,
+                    filter: (i) =>
+                        ['aprobar', 'denegar'].includes(i.customId) &&
+                        i.message.id === mensajeValidacion.id,
+                    time: 0,
                 });
 
                 collector.on('collect', async (i) => {
-                    try {
-                        // Bloquear botones después de que se presionan
-                        await i.update({
-                            components: [
-                                new ActionRowBuilder().addComponents(
-                                    new ButtonBuilder()
-                                        .setCustomId('aprobar')
-                                        .setLabel('Aprobado')
-                                        .setStyle(ButtonStyle.Success)
-                                        .setDisabled(true),
-                                    new ButtonBuilder()
-                                        .setCustomId('denegar')
-                                        .setLabel('Denegado')
-                                        .setStyle(ButtonStyle.Danger)
-                                        .setDisabled(true)
-                                ),
-                            ],
-                        });
-
-                        if (i.customId === 'aprobar') {
-                            // Inscribir al usuario en el JSON
-                            const filePath = path.join(__dirname, 'inscritos_torneo.json');
-                            let inscritos = [];
-
-                            if (fs.existsSync(filePath)) {
-                                inscritos = JSON.parse(fs.readFileSync(filePath));
-                            }
-
-                            inscritos.push({
-                                nombreInvocador,
-                                userId: modalInteraction.user.displayName,
-                            });
-
-                            fs.writeFileSync(filePath, JSON.stringify(inscritos, null, 2));
-
-                            // Enviar mensaje privado de confirmación
-                            const embedAprobado = new EmbedBuilder()
-                                .setColor('#79E096')
-                                .setDescription('<:check:1286772042657566780> ¡Has sido aceptado en el torneo! ¡Mucha suerte!');
-
-                            await modalInteraction.user.send({
-                                embeds: [embedAprobado],
-                            });
-
-                            await i.reply({
-                                embeds: [
-                                    new EmbedBuilder()
-                                        .setColor('#79E096')
-                                        .setDescription('<:check:1286772042657566780> Solicitud aceptada.'),
-                                ],
-                                ephemeral: true,
-                            });
-                        } else if (i.customId === 'denegar') {
-                            // Denegar la solicitud
-                            await modalInteraction.user.send({
-                                embeds: [
-                                    new EmbedBuilder()
-                                        .setColor('#F87171')
-                                        .setDescription( '<:decline:1286772064765743197> No hemos podido confirmar tus datos, por favor vuelve a enviarlos. Si tienes problemas puedes contactar a Jedoth directamente.' ),
-                                ],
-                            });
-
-                            await i.reply({
-                                embeds: [
-                                    new EmbedBuilder()
-                                        .setColor('#F87171')
-                                        .setDescription('<:decline:1286772064765743197> La solicitud ha sido denegada.'),
-                                ],
-                                ephemeral: true,
-                            });
+                    if (i.customId === 'aprobar') {
+                        const filePath = path.join(__dirname, 'inscritos_torneo.json');
+                        let inscritos = [];
+                    
+                        if (fs.existsSync(filePath)) {
+                            inscritos = JSON.parse(fs.readFileSync(filePath));
                         }
-                    } catch (error) {
-                        console.error(error);
+                    
+                        inscritos.push({ invocador: nombreInvocador, discordId: modalInteraction.user.displayName });
+                    
+                        fs.writeFileSync(filePath, JSON.stringify(inscritos, null, 2));
+                    
+                        // Respuesta al moderador
+                        const embedAprobadoModerador = new EmbedBuilder()
+                            .setColor('#79E096') // Verde
+                            .setDescription('<:check:1286772042657566780> **Solicitud aprobada.** El jugador ha sido inscrito correctamente.');
+                    
+                        await i.reply({ embeds: [embedAprobadoModerador], ephemeral: true });
+                    
+                        // Mensaje privado al usuario
+                        const embedAprobadoUsuario = new EmbedBuilder()
+                            .setColor('#79E096')
+                            .setDescription('<:check:1286772042657566780> ¡Felicidades! Tu solicitud ha sido aprobada. ¡Buena suerte en el torneo!');
+                    
+                        await modalInteraction.user.send({ embeds: [embedAprobadoUsuario] });
+                    
+                    } else if (i.customId === 'denegar') {
+                        // Respuesta al moderador
+                        const embedDenegadoModerador = new EmbedBuilder()
+                            .setColor('#F87171') // Rojo
+                            .setDescription('<:decline:1286772064765743197> **Solicitud denegada.** El jugador no cumple con los requisitos o los datos enviados son incorrectos.');
+                    
+                        await i.reply({ embeds: [embedDenegadoModerador], ephemeral: true });
+                    
+                        // Mensaje privado al usuario
+                        const embedDenegadoUsuario = new EmbedBuilder()
+                            .setColor('#F87171')
+                            .setDescription('<:decline:1286772064765743197> Tu solicitud ha sido denegada. Confirma los datos enviados o contacta a un administrador para más información.');
+                    
+                        await modalInteraction.user.send({ embeds: [embedDenegadoUsuario] });
                     }
+                    
+
+                    await i.message.edit({
+                        components: [
+                            new ActionRowBuilder().addComponents(
+                                new ButtonBuilder()
+                                    .setCustomId('aprobar')
+                                    .setLabel('Aprobado')
+                                    .setStyle(ButtonStyle.Success)
+                                    .setDisabled(true),
+                                new ButtonBuilder()
+                                    .setCustomId('denegar')
+                                    .setLabel('Denegado')
+                                    .setStyle(ButtonStyle.Danger)
+                                    .setDisabled(true)
+                            ),
+                        ],
+                    });
                 });
             });
         }

@@ -17,7 +17,7 @@ module.exports = {
 
         // Crear el embed para el torneo
         const embed = new EmbedBuilder()
-            .setColor('#2f2f2f')
+            .setColor("NotQuiteBlack")
             .setTitle('🏆 ARKANIA RIFT')
             .setDescription('¿Estás listo para enfrentarte a los mejores y demostrar tu supremacía en el Puente del Progreso? Inscríbete ahora y únete a esta épica contienda donde cada jugada cuenta y solo el más fuertes llegará a la cima. ¡No dejes que te lo cuenten, haz historia en ARKANIA RIFT! ¿Tienes lo que se necesita para ganar? **¡Este es tu momento!**')
             .addFields(
@@ -150,7 +150,7 @@ module.exports = {
                 const embedValidacion = new EmbedBuilder()
                     .setColor('#FFC868')
                     .setTitle('Nueva Inscripción')
-                    .setDescription('Un usuario ha enviado su solicitud de inscripción al torneo.')
+                    .setDescription(' ')
                     .addFields(
                         { name: 'Invocador', value: nombreInvocador, inline: true },
                         { name: 'Discord', value: `<@${modalInteraction.user.id}>`, inline: true }

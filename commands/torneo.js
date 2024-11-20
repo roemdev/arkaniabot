@@ -168,7 +168,7 @@ module.exports = {
                 );
 
                 const validacionChannel = await client.channels
-                    .fetch('1273453941056602152')
+                    .fetch('1308660007113330698')
                     .catch(() => null);
 
                 if (!validacionChannel) {

@@ -149,7 +149,7 @@ module.exports = {
 
                 const embedValidacion = new EmbedBuilder()
                     .setColor('#FFC868')
-                    .setTitle('Nueva Inscripción')
+                    .setTitle('Solicitud de inscripción al torneo')
                     .setDescription(' ')
                     .addFields(
                         { name: 'Invocador', value: nombreInvocador, inline: true },

@@ -66,13 +66,6 @@ module.exports = {
                                 )
                                 .setStyle(TextInputStyle.Short)
                                 .setRequired(true)
-                        ),
-                        new ActionRowBuilder().addComponents(
-                            new TextInputBuilder()
-                                .setCustomId('nombre_lol')
-                                .setLabel('Nombre personal')
-                                .setStyle(TextInputStyle.Short)
-                                .setRequired(true)
                         )
                     );
 
@@ -142,9 +135,6 @@ module.exports = {
                 const nombreInvocador = modalInteraction.fields.getTextInputValue(
                     'nombre_invocador'
                 );
-                const nombreLol = modalInteraction.fields.getTextInputValue(
-                    'nombre_lol'
-                );
 
                 const confirmationModalEmbed = new EmbedBuilder()
                     .setColor('#79E096')
@@ -163,7 +153,6 @@ module.exports = {
                     .setDescription('Un usuario ha enviado su solicitud de inscripción al torneo.')
                     .addFields(
                         { name: 'Invocador', value: nombreInvocador, inline: true },
-                        { name: 'Nombre', value: nombreLol, inline: true },
                         { name: 'Discord', value: `<@${modalInteraction.user.id}>`, inline: true }
                     );
 
@@ -240,8 +229,7 @@ module.exports = {
 
                             inscritos.push({
                                 nombreInvocador,
-                                nombreLol,
-                                userId: modalInteraction.user.id,
+                                userId: modalInteraction.user.displayName,
                             });
 
                             fs.writeFileSync(filePath, JSON.stringify(inscritos, null, 2));

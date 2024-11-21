@@ -4,7 +4,7 @@ module.exports = {
   name: Events.GuildMemberUpdate,
   async execute(oldMember, newMember) {
     const hasBoosted = !oldMember.premiumSince && newMember.premiumSince; 
-    const boostChannel = newMember.guild.channels.cache.get("1308849648122724413"); // Reemplaza con el ID del canal
+    const boostChannel = newMember.guild.channels.cache.get("1173781298721063014"); // Reemplaza con el ID del canal
 
     try {
       if (hasBoosted && boostChannel) {

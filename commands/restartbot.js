@@ -11,7 +11,7 @@ module.exports = {
       return interaction.reply({ content: "No tienes permisos para reiniciar el bot.", ephemeral: true });
     }
 
-    await interaction.reply({ content: "🔄 Reiniciando el bot...", ephemeral: true });
+    await interaction.reply({ content: "🔄 Reiniciando el bot.", ephemeral: true });
 
     process.exit();
   }

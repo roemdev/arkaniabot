@@ -1,6 +1,6 @@
 const fs = require("node:fs");
 const path = require("node:path");
-const { Client, Collection, GatewayIntentBits, REST, Routes } = require("discord.js");
+const { Client, Collection, GatewayIntentBits, REST, Routes, EmbedBuilder } = require("discord.js");
 require("dotenv").config();
 
 const client = new Client({
@@ -66,6 +66,37 @@ for (const file of eventFiles) {
     client.on(event.name, (...args) => event.execute(...args));
   }
 }
+
+// Añadir la escucha para los mensajes con prefijo
+const authorizedUserId = '271683421065969664';  // Tu ID de usuario de Discord
+
+client.on('messageCreate', async (message) => {
+  // Evitar que el bot se responda a sí mismo
+  if (message.author.bot) return;
+
+  // Verificar si el mensaje comienza con el prefijo y el comando 'reset'
+  if (message.content.startsWith('arkaniabot- reset')) {
+    // Verificar si el autor del mensaje es el usuario autorizado
+    if (message.author.id !== authorizedUserId) {
+      const noPermissionEmbed = new EmbedBuilder()
+        .setColor('#F87171') // Rojo (mensaje de error)
+        .setDescription('<:decline:1286772064765743197> No tienes permisos para reiniciar el bot.');
+
+      return message.channel.send({ embeds: [noPermissionEmbed] });
+    }
+
+    // Crear el embed de reinicio
+    const restartEmbed = new EmbedBuilder()
+      .setColor('#79E096') // Verde (mensaje positivo)
+      .setDescription('<:check:1286772042657566780> El bot se está reiniciando.')
+
+    // Enviar el embed de reinicio en el canal
+    await message.channel.send({ embeds: [restartEmbed] });
+
+    // Reiniciar el bot
+    process.exit();  // Detener el proceso de Node.js, reiniciando el bot
+  }
+});
 
 // Función para registrar los comandos y luego iniciar el bot
 (async () => {

@@ -1,11 +1,12 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, PermissionsBitField } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
+        .setDefaultMemberPermissions(PermissionsBitField.Flags.BanMembers)
         .setName('embed-simple')
         .setDescription('Envía un embed editable vacío en el canal actual.'),
     async execute(interaction) {
-        
+
         // Crear un embed vacío con el color NotQuiteBlack
         const embed = new EmbedBuilder()
             .setColor("NotQuiteBlack")

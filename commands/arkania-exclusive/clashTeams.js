@@ -1,9 +1,10 @@
-const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require("discord.js");
+const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, PermissionsBitField } = require("discord.js");
 
 const MAX_MEMBERS_PER_TEAM = 5; // Máximo de miembros por equipo
 
 module.exports = {
   data: new SlashCommandBuilder()
+    .setDefaultMemberPermissions(PermissionsBitField.Flags.BanMembers)
     .setName("equiposclash")
     .setDescription("Configura los equipos para el Clash de League of Legends.")
     .addStringOption(option =>

@@ -1,16 +1,10 @@
-const {
-  SlashCommandBuilder,
-  PermissionFlagsBits,
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-  EmbedBuilder,
-} = require("discord.js");
+const { SlashCommandBuilder, PermissionsBitField, ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require("discord.js");
 const fs = require("fs");
 const filePath = "./json/calificaciones.json";
 
 module.exports = {
   data: new SlashCommandBuilder()
+    .setDefaultMemberPermissions(PermissionsBitField.Flags.BanMembers)
     .setName("cocina")
     .setDescription("Comando para el programa de cocina")
     .addSubcommand((subcommand) =>

@@ -5,6 +5,7 @@ module.exports = {
         .setName('ping')
         .setDescription('Muestra la latencia del bot y de la API de Discord'),
     async execute(interaction) {
+        
         // Defiere la respuesta para calcular la latencia sin un mensaje visible
         await interaction.deferReply();
 
@@ -22,7 +23,7 @@ module.exports = {
 
         // Crear el embed con la información de latencia
         const embed = new EmbedBuilder()
-            .setColor("NotQuiteBlack")
+            .setColor("#2b2d31")
             .setTitle(`🏓 pong!`)
             .setDescription(`**bot:** \`${botLatency}ms\` | **api:** \`${apiLatency}ms\`\n**uptime:** \`${uptimeFormatted}\``)
             .setFooter({ text: `${currentDateTime}` });

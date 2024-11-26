@@ -1,8 +1,8 @@
-const { SlashCommandBuilder } = require("@discordjs/builders");
-const { EmbedBuilder } = require("discord.js");
+const { SlashCommandBuilder, EmbedBuilder, PermissionsBitField } = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
+    .setDefaultMemberPermissions(PermissionsBitField.Flags.BanMembers)
     .setName("normas")
     .setDescription("Envía las normas de Arkania."),
   

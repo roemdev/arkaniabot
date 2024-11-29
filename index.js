@@ -3,6 +3,7 @@ const path = require("node:path");
 const { Client, Collection, GatewayIntentBits, REST, Routes, EmbedBuilder } = require("discord.js");
 require("dotenv").config();
 
+// Configuración del cliente
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -10,114 +11,94 @@ const client = new Client({
     GatewayIntentBits.GuildVoiceStates,
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildMembers,
-    GatewayIntentBits.GuildMessageReactions
+    GatewayIntentBits.GuildMessageReactions,
   ],
 });
 
 client.commands = new Collection();
-const commandsPath = path.join(__dirname, "commands");
-const commandFilesAndFolders = fs.readdirSync(commandsPath);
 
-const commands = [];
-// Carga de comandos y preparación de comandos para deploy
-for (const item of commandFilesAndFolders) {
-  const itemPath = path.join(commandsPath, item);
-  if (fs.statSync(itemPath).isDirectory()) {
-    const commandFiles = fs
-      .readdirSync(itemPath)
-      .filter((file) => file.endsWith(".js"));
-    for (const file of commandFiles) {
-      const filePath = path.join(itemPath, file);
-      const command = require(filePath);
+// Función para cargar comandos
+function loadCommands(commandsPath) {
+  const commands = [];
+  const items = fs.readdirSync(commandsPath);
+
+  for (const item of items) {
+    const itemPath = path.join(commandsPath, item);
+    if (fs.statSync(itemPath).isDirectory()) {
+      commands.push(...loadCommands(itemPath));
+    } else if (item.endsWith(".js")) {
+      const command = require(itemPath);
       if ("data" in command && "execute" in command) {
         client.commands.set(command.data.name, command);
         commands.push(command.data.toJSON());
       } else {
-        console.log(
-          `[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`
-        );
+        console.warn(`[WARNING] El comando en ${itemPath} no tiene propiedades "data" o "execute".`);
       }
     }
-  } else if (item.endsWith(".js")) {
-    const command = require(itemPath);
-    if ("data" in command && "execute" in command) {
-      client.commands.set(command.data.name, command);
-      commands.push(command.data.toJSON());
+  }
+
+  return commands;
+}
+
+// Función para cargar eventos
+function loadEvents(eventsPath) {
+  const files = fs.readdirSync(eventsPath).filter((file) => file.endsWith(".js"));
+  for (const file of files) {
+    const filePath = path.join(eventsPath, file);
+    const event = require(filePath);
+    if (event.name && typeof event.execute === "function") {
+      if (event.once) {
+        client.once(event.name, (...args) => event.execute(...args));
+      } else {
+        client.on(event.name, (...args) => event.execute(...args));
+      }
     } else {
-      console.log(
-        `[WARNING] The command at ${itemPath} is missing a required "data" or "execute" property.`
-      );
+      console.warn(`[WARNING] El evento en ${filePath} no tiene propiedades "name" o "execute".`);
     }
   }
 }
 
-// Carga de eventos
-const eventsPath = path.join(__dirname, "events");
-const eventFiles = fs
-  .readdirSync(eventsPath)
-  .filter((file) => file.endsWith(".js"));
-
-for (const file of eventFiles) {
-  const filePath = path.join(eventsPath, file);
-  const event = require(filePath);
-  if (event.once) {
-    client.once(event.name, (...args) => event.execute(...args));
-  } else {
-    client.on(event.name, (...args) => event.execute(...args));
-  }
-}
-
-// Añadir la escucha para los mensajes con prefijo
-const authorizedUserId = '271683421065969664';  // Tu ID de usuario de Discord
-
-client.on('messageCreate', async (message) => {
-  // Evitar que el bot se responda a sí mismo
+// Función para reiniciar el bot
+client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
 
-  // Verificar si el mensaje comienza con el prefijo y el comando 'reset'
-  if (message.content.startsWith('arkaniabot- reset')) {
-    // Verificar si el autor del mensaje es el usuario autorizado
-    if (message.author.id !== authorizedUserId) {
+  if (message.content.startsWith("arkaniabot- reset")) {
+    if (message.author.id !== process.env.AUTHORIZED_USER_ID) {
       const noPermissionEmbed = new EmbedBuilder()
-        .setColor('#F87171') // Rojo (mensaje de error)
-        .setDescription('<:decline:1286772064765743197> No tienes permisos para reiniciar el bot.');
-
+        .setColor("#F87171")
+        .setDescription("<:decline:1286772064765743197> No tienes permisos para reiniciar el bot.");
       return message.channel.send({ embeds: [noPermissionEmbed] });
     }
 
-    // Crear el embed de reinicio
     const restartEmbed = new EmbedBuilder()
-      .setColor('#79E096') // Verde (mensaje positivo)
-      .setDescription('<:check:1286772042657566780> El bot se está reiniciando.')
-
-    // Enviar el embed de reinicio en el canal
+      .setColor("#79E096")
+      .setDescription("<:check:1286772042657566780> El bot se está reiniciando...");
     await message.channel.send({ embeds: [restartEmbed] });
-
-    // Reiniciar el bot
-    process.exit();  // Detener el proceso de Node.js, reiniciando el bot
+    process.exit(0);
   }
 });
 
-// Función para registrar los comandos y luego iniciar el bot
+// Registrar comandos y conectar el bot
 (async () => {
+  const commandsPath = path.join(__dirname, "commands");
+  const eventsPath = path.join(__dirname, "events");
   const token = process.env.DISCORD_TOKEN;
   const clientId = process.env.CLIENT_ID;
   const guildId = process.env.GUILD_ID;
-  const rest = new REST({ version: "10" }).setToken(token);
 
   try {
-    console.log(`Started refreshing ${commands.length} application (/) commands.`);
+    const commands = loadCommands(commandsPath);
+    loadEvents(eventsPath);
 
-    // Registrar comandos en el servidor
-    const data = await rest.put(
-      Routes.applicationGuildCommands(clientId, guildId),
-      { body: commands }
-    );
+    const rest = new REST({ version: "10" }).setToken(token);
+    console.log(`📦 Registrando ${commands.length} comandos en el servidor...`);
+    const data = await rest.put(Routes.applicationGuildCommands(clientId, guildId), {
+      body: commands,
+    });
 
-    console.log(`Successfully reloaded ${data.length} application (/) commands.`);
-
+    console.log(`✅ ${data.length} comandos registrados exitosamente.`);
     client.login(token);
   } catch (error) {
-    console.error(error);
+    console.error("❌ Error al iniciar el bot:", error);
   }
 })();

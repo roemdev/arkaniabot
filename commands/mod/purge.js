@@ -26,7 +26,7 @@ module.exports = {
         }
 
         // Obtener mensajes del canal
-        const messages = await interaction.channel.messages.fetch({ limit: Math.min(cantidad, 100) });
+        const messages = await interaction.channel.messages.fetch({ limit: Math.min(cantidad, 1000) });
         let filteredMessages;
 
         // Filtrar mensajes por usuario si se especificó
@@ -39,13 +39,12 @@ module.exports = {
         // Convertir la colección filtrada a un array
         const messagesArray = Array.from(filteredMessages.values());
 
-        // Eliminar mensajes en bloques (Discord limita a 100 mensajes por vez)
+        // Eliminar mensajes en bloques de 100 (limitación de Discord)
         let totalDeleted = 0;
-        const batches = Array.from({ length: Math.ceil(messagesArray.length / 100) }, (_, i) =>
-            messagesArray.slice(i * 100, (i + 1) * 100)
-        );
 
-        for (const batch of batches) {
+        // Dividir los mensajes a eliminar en lotes de 100
+        while (messagesArray.length > 0) {
+            const batch = messagesArray.splice(0, 100);
             const deletedMessages = await interaction.channel.bulkDelete(batch, true);
             totalDeleted += deletedMessages.size;
         }

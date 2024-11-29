@@ -3,7 +3,7 @@ const ms = require("ms");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("gstart")
+    .setName("giveaway")
     .setDescription("Inicia un nuevo sorteo")
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageEvents)
     .addStringOption(option =>
@@ -23,20 +23,13 @@ module.exports = {
         .setName("prize")
         .setDescription("Premio")
         .setRequired(true)
-    )
-    .addStringOption(option =>
-      option
-        .setName("winning_roles")
-        .setDescription("IDs de los roles que pueden ganar, separados por comas")
-        .setRequired(true)
-    )
-    .addRoleOption(option =>
-      option
-        .setName("role_multiplier")
-        .setDescription("Rol que da el doble de entradas a los miembros que lo tienen")
     ),
 
   async execute(interaction) {
+    // Variables configurables
+    const REQUIRED_ENTRY_ROLE = "1312152368330178640";
+    const DOUBLE_ENTRY_ROLES = ["1241182617504579594", "1303816942326648884"];
+
     const { user, member, channel, options } = interaction;
 
     // Verificar permisos
@@ -51,8 +44,6 @@ module.exports = {
     const duration = options.getString("duration");
     const prize = options.getString("prize");
     const winnersQty = options.getInteger("winners");
-    const roleMultiplier = options.getRole("role_multiplier")?.id;
-    const winningRoles = options.getString("winning_roles").split(",").map(role => role.trim());
 
     // Convertir duración a milisegundos usando `ms`
     const durationMs = ms(duration);
@@ -118,13 +109,23 @@ module.exports = {
       if (i.customId === "enter") {
         const embedReply = new EmbedBuilder();
 
+        // Verificar requisitos para participar
+        if (!userRoles.has(REQUIRED_ENTRY_ROLE)) {
+          embedReply
+            .setColor("#F87171")
+            .setDescription("<:decline:1286772064765743197> Aun no has comprado una entrada a este sorteo.");
+          return await i.reply({ embeds: [embedReply], ephemeral: true });
+        }
+
+        // Verificar si ya está inscrito
         if (entries.includes(userId)) {
           embedReply
             .setColor("#FFC868")
             .setDescription("<:info:1286772089046700094> ¡Ya estás participando en el sorteo!");
         } else {
+          // Añadir entradas según roles
           let entriesQty = 1;
-          if (roleMultiplier && userRoles.has(roleMultiplier)) entriesQty *= 2;
+          if (DOUBLE_ENTRY_ROLES.some(role => userRoles.has(role))) entriesQty *= 2;
 
           for (let j = 0; j < entriesQty; j++) {
             entries.push(userId);
@@ -152,9 +153,8 @@ module.exports = {
         const requirementsEmbed = new EmbedBuilder()
           .setColor("#FFC868")
           .setTitle("Condiciones del sorteo")
-          .setDescription(`
-            * Para ganar en este sorteo, necesitas ser <@&1284145913354522685> o superior.
-            * El rol ${roleMultiplier} otorga el doble de entradas.`
+          .setDescription(
+            `**Requisitos para participar:**\n* Ser <@&1284145913354522685> o superior.\n* Comprar la entrada (con monedas).\n\n**Beneficios adicionales:**\n- Los roles <@&${DOUBLE_ENTRY_ROLES[0]}> y <@&${DOUBLE_ENTRY_ROLES[1]}> otorgan el doble de entradas (no acumulable).`
           );
 
         await i.reply({ embeds: [requirementsEmbed], ephemeral: true });
@@ -168,22 +168,12 @@ module.exports = {
       }
 
       // Seleccionar ganadores
-      const validEntries = entries.filter(userId => {
-        const member = channel.guild.members.cache.get(userId);
-        return member && winningRoles.some(roleId => member.roles.cache.has(roleId));
-      });
-
-      if (validEntries.length === 0) {
-        await channel.send("No hay participantes válidos con los roles requeridos.");
-        return;
-      }
-
       const winners = new Set();
-      while (winners.size < winnersQty && validEntries.length > 0) {
-        const randomIndex = Math.floor(Math.random() * validEntries.length);
-        const winnerID = validEntries[randomIndex];
+      while (winners.size < winnersQty && entries.length > 0) {
+        const randomIndex = Math.floor(Math.random() * entries.length);
+        const winnerID = entries[randomIndex];
         winners.add(winnerID);
-        validEntries.splice(randomIndex, 1);
+        entries.splice(randomIndex, 1);
       }
 
       const winnersArray = Array.from(winners);
@@ -200,8 +190,8 @@ module.exports = {
       await message.edit({ embeds: [finalEmbed], components: [] });
 
       const winnerMsg = winnersQty === 1
-        ? `🎉 ¡Felicidades ${winnersMention}! Has ganado **${prize}**.`
-        : `🎉 ¡Felicidades ${winnersMention}! Han ganado **${prize}**.`;
+        ? `🎉 ¡Felicidades ${winnersMention}! Has ganado el sorteo.`
+        : `🎉 ¡Felicidades ${winnersMention}! Han ganado el sorteo.`;
 
       await channel.send(winnerMsg);
     });

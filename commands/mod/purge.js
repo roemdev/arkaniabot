@@ -7,7 +7,7 @@ module.exports = {
         .setDescription('Elimina mensajes en un canal.')
         .addIntegerOption(option =>
             option.setName('cantidad')
-                .setDescription('max: 1000.')
+                .setDescription('Cantidad de mensajes a eliminar (máximo: 100).')
                 .setRequired(true))
         .addUserOption(option =>
             option.setName('usuario')
@@ -17,16 +17,17 @@ module.exports = {
         const cantidad = interaction.options.getInteger('cantidad');
         const usuario = interaction.options.getUser('usuario');
 
-        // Validar rango de cantidad
-        if (cantidad < 1 || cantidad > 1000) {
+        // Validar que la cantidad esté entre 1 y 100 (Discord limita a 100 mensajes por vez)
+        if (cantidad < 1 || cantidad > 100) {
             const invalidAmountEmbed = new EmbedBuilder()
                 .setColor("#F87171")
-                .setDescription('<:decline:1286772064765743197> La cantidad debe estar entre 1 y 1000 mensajes.');
+                .setDescription('<:decline:1286772064765743197> La cantidad debe estar entre 1 y 100 mensajes.');
             return interaction.reply({ embeds: [invalidAmountEmbed], ephemeral: true });
         }
 
-        // Obtener mensajes del canal
-        const messages = await interaction.channel.messages.fetch({ limit: Math.min(cantidad, 1000) });
+        // Obtener los mensajes del canal (hasta el límite de la cantidad indicada)
+        const messages = await interaction.channel.messages.fetch({ limit: cantidad });
+
         let filteredMessages;
 
         // Filtrar mensajes por usuario si se especificó
@@ -39,14 +40,19 @@ module.exports = {
         // Convertir la colección filtrada a un array
         const messagesArray = Array.from(filteredMessages.values());
 
-        // Eliminar mensajes en bloques de 100 (limitación de Discord)
+        // Eliminar los mensajes en lotes de hasta 100
         let totalDeleted = 0;
 
-        // Dividir los mensajes a eliminar en lotes de 100
+        // Dividir los mensajes en lotes de 100 (Discord no permite más de 100 por vez)
         while (messagesArray.length > 0) {
             const batch = messagesArray.splice(0, 100);
-            const deletedMessages = await interaction.channel.bulkDelete(batch, true);
-            totalDeleted += deletedMessages.size;
+            try {
+                const deletedMessages = await interaction.channel.bulkDelete(batch, true); // Eliminar mensajes
+                totalDeleted += deletedMessages.size;
+            } catch (error) {
+                console.error('Error al eliminar los mensajes:', error);
+                return interaction.reply({ content: 'Hubo un error al intentar eliminar los mensajes.', ephemeral: true });
+            }
         }
 
         // Respuesta final

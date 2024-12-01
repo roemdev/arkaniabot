@@ -156,8 +156,8 @@ module.exports = {
           .setDescription(` `
           )
           .addFields(
-            { name: "Requisitos para participar", value: "Ser <@&1284145913354522685> o superior.\n* Comprar la entrada (con monedas).", inline: true},
-            { name: "Beneficios adicionales", value: `Los roles <@&${DOUBLE_ENTRY_ROLES[0]}> y <@&${DOUBLE_ENTRY_ROLES[1]}> otorgan el doble de entradas (no acumulable).`, inline: true},
+            { name: "Requisitos para participar", value: "* Ser <@&1284145913354522685> o superior.\n* Comprar la entrada (con monedas).", inline: true},
+            { name: "Beneficios adicionales", value: `* Los roles <@&${DOUBLE_ENTRY_ROLES[0]}> y <@&${DOUBLE_ENTRY_ROLES[1]}> otorgan el doble de entradas (no acumulable).`, inline: true},
             { name: " ", value: "> Si ganas, tendrás 24 horas para contactar al organizador.", inline: false},
 
           )

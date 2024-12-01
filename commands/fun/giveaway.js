@@ -23,11 +23,16 @@ module.exports = {
         .setName("prize")
         .setDescription("Premio")
         .setRequired(true)
+    )
+    .addRoleOption(option =>
+      option
+        .setName("required_role")
+        .setDescription("Rol necesario para participar (opcional)")
+        .setRequired(false)
     ),
 
   async execute(interaction) {
     // Variables configurables
-    const REQUIRED_ENTRY_ROLE = "1312152368330178640";
     const DOUBLE_ENTRY_ROLES = ["1241182617504579594", "1303816942326648884"];
 
     const { user, member, channel, options } = interaction;
@@ -44,6 +49,7 @@ module.exports = {
     const duration = options.getString("duration");
     const prize = options.getString("prize");
     const winnersQty = options.getInteger("winners");
+    const requiredRole = options.getRole("required_role");
 
     // Convertir duración a milisegundos usando `ms`
     const durationMs = ms(duration);
@@ -62,7 +68,7 @@ module.exports = {
     const enterBtn = new ButtonBuilder()
       .setCustomId("enter")
       .setLabel(" ")
-      .setStyle(ButtonStyle.Success)
+      .setStyle(ButtonStyle.Primary)
       .setEmoji("🎉");
 
     const requirementsBtn = new ButtonBuilder()
@@ -110,10 +116,10 @@ module.exports = {
         const embedReply = new EmbedBuilder();
 
         // Verificar requisitos para participar
-        if (!userRoles.has(REQUIRED_ENTRY_ROLE)) {
+        if (requiredRole && !userRoles.has(requiredRole.id)) {
           embedReply
             .setColor("#F87171")
-            .setDescription("<:decline:1286772064765743197> Aun no has comprado una entrada a este sorteo.");
+            .setDescription(`<:decline:1286772064765743197> Necesitas el rol <@&${requiredRole.id}> para participar en este sorteo.`);
           return await i.reply({ embeds: [embedReply], ephemeral: true });
         }
 
@@ -153,14 +159,13 @@ module.exports = {
         const requirementsEmbed = new EmbedBuilder()
           .setColor("#FFC868")
           .setTitle("Condiciones del sorteo")
-          .setDescription(` `
-          )
-          .addFields(
-            { name: "Requisitos para participar", value: "* Ser <@&1284145913354522685> o superior.\n* Comprar la entrada (con monedas).", inline: true},
-            { name: "Beneficios adicionales", value: `* Los roles <@&${DOUBLE_ENTRY_ROLES[0]}> y <@&${DOUBLE_ENTRY_ROLES[1]}> otorgan el doble de entradas (no acumulable).`, inline: true},
-            { name: " ", value: "> Si ganas, tendrás 24 horas para contactar al organizador.", inline: false},
-
-          )
+          .setDescription(
+            `Requisitos para participar:\n${
+              requiredRole ? `- Tener el rol <@&${requiredRole.id}>\n` : ""
+            }- Comprar la entrada (con monedas).\n\nBeneficios adicionales:\n- Los roles ${DOUBLE_ENTRY_ROLES.map(
+              (role) => `<@&${role}>`
+            ).join(" y ")} otorgan el doble de entradas (no acumulable).\n\n> Si ganas, tendrás 24 horas para contactar al organizador.`
+          );
 
         await i.reply({ embeds: [requirementsEmbed], ephemeral: true });
       }

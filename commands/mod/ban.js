@@ -15,11 +15,16 @@ module.exports = {
             option.setName('razón')
                 .setDescription('Razón del baneo.')
                 .setRequired(true))
+        .addBooleanOption(option =>
+            option.setName('eliminar_mensajes')
+                .setDescription('¿Eliminar los últimos 100 mensajes del usuario?'))
         .setDefaultMemberPermissions(PermissionFlagsBits.ViewAuditLog),
     async execute(interaction) {
         const usuario = interaction.options.getUser('usuario');
         const razon = interaction.options.getString('razón') || 'No especificada.';
+        const eliminarMensajes = interaction.options.getBoolean('eliminar_mensajes') || false;
         const miembro = interaction.guild.members.cache.get(usuario.id);
+
         const rolesPermitidos = {
             '991490018151514123': 1, // Máximo 1 baneo por hora
             '1251292331852697623': 5 // Máximo 5 baneos por hora
@@ -48,13 +53,11 @@ module.exports = {
         }
         const datosUsuario = bans.get(userId);
 
-        // Si ha pasado una hora, resetear el contador
         if (ahora > datosUsuario.resetTime) {
             datosUsuario.count = 0;
-            datosUsuario.resetTime = ahora + 3600000; // Reiniciar el contador a la nueva hora
+            datosUsuario.resetTime = ahora + 3600000;
         }
 
-        // Comprobar si el límite de baneos se ha alcanzado
         if (datosUsuario.count >= maxBaneos) {
             const reinicioTimestamp = Math.floor(datosUsuario.resetTime / 1000);
             return interaction.reply({
@@ -80,9 +83,16 @@ module.exports = {
         }
 
         try {
+            // Eliminar mensajes si la opción está habilitada
+            if (eliminarMensajes) {
+                const mensajes = await interaction.channel.messages.fetch({ limit: 100 });
+                const mensajesUsuario = mensajes.filter(msg => msg.author.id === usuario.id);
+                await interaction.channel.bulkDelete(mensajesUsuario, true);
+            }
+
             // Enviar mensaje privado al usuario
             const embedDM = new EmbedBuilder()
-                .setColor("NotQuiteBlack")
+                .setColor('NotQuiteBlack')
                 .setDescription(`Has sido baneado del servidor **${interaction.guild.name}**. **Razón:** ${razon}.`);
 
             await usuario.send({ embeds: [embedDM] }).catch(() => {
@@ -92,14 +102,12 @@ module.exports = {
             // Bannear al usuario
             await miembro.ban({ reason: razon });
 
-            // Actualizar el contador de baneos
             datosUsuario.count += 1;
             bans.set(userId, datosUsuario);
 
             const reinicioTimestamp = Math.floor(datosUsuario.resetTime / 1000);
             const baneosRestantes = maxBaneos - datosUsuario.count;
 
-            // Confirmar el baneo al moderador
             await interaction.reply({
                 embeds: [
                     new EmbedBuilder()
@@ -109,8 +117,7 @@ module.exports = {
                 ephemeral: true
             });
 
-            // Enviar mensaje a un canal específico sobre el baneo
-            const canalBaneos = interaction.guild.channels.cache.get('1284140644843126794'); // Cambia este ID por el canal correcto
+            const canalBaneos = interaction.guild.channels.cache.get('1284140644843126794');
             if (canalBaneos) {
                 const embedCanal = new EmbedBuilder()
                     .setColor('#2b2d31')

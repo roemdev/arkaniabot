@@ -15,11 +15,17 @@ module.exports = {
             option.setName('razón')
                 .setDescription('Razón de la expulsión.')
                 .setRequired(true))
+        .addBooleanOption(option =>
+            option.setName('eliminar_mensajes')
+                .setDescription('Elimina los últimos 100 mensajes del usuario.')
+                .setRequired(false))
         .setDefaultMemberPermissions(PermissionFlagsBits.ViewAuditLog),
     async execute(interaction) {
         const usuario = interaction.options.getUser('usuario');
         const razon = interaction.options.getString('razón') || 'No especificada.';
+        const eliminarMensajes = interaction.options.getBoolean('eliminar_mensajes') || false;
         const miembro = interaction.guild.members.cache.get(usuario.id);
+
         const rolesPermitidos = {
             '991490018151514123': 1, // Máximo 1 expulsión por hora
             '1251292331852697623': 5 // Máximo 5 expulsiones por hora
@@ -80,11 +86,19 @@ module.exports = {
         }
 
         try {
+            // Eliminar mensajes si la opción está habilitada
+            if (eliminarMensajes) {
+                const channelMessages = await interaction.channel.messages.fetch({ limit: 100 });
+                const userMessages = channelMessages.filter(msg => msg.author.id === usuario.id);
+                await interaction.channel.bulkDelete(userMessages, true).catch(err => {
+                    console.error('Error al eliminar mensajes:', err);
+                });
+            }
+
             // Enviar mensaje privado al usuario
             const embedDM = new EmbedBuilder()
                 .setColor("NotQuiteBlack")
                 .setDescription(`Has sido expulsado del servidor **${interaction.guild.name}**. **Razón:** ${razon}.`);
-
             await usuario.send({ embeds: [embedDM] }).catch(() => {
                 console.log(`No se pudo enviar el mensaje privado a ${usuario.tag}.`);
             });

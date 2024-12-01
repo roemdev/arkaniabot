@@ -86,23 +86,23 @@ module.exports = {
           embed.setDescription(`El usuario <@${user.id}> ya tiene el rol **${role.name}**.`);
         } else {
           await targetMember.roles.add(role);
-          embed.setDescription(`<:check:1286772042657566780> Se añadió el rol **${role.name}** a <@${user.id}>.`);
+          embed.setDescription(`<:check:1286772042657566780> Se **añadió** el rol **${role.name}** a <@${user.id}>.`);
         }
       } else if (action === "remove") {
         if (!targetMember.roles.cache.has(role.id)) {
           embed.setDescription(`El usuario <@${user.id}> no tiene el rol **${role.name}**.`);
         } else {
           await targetMember.roles.remove(role);
-          embed.setDescription(`<:decline:1286772064765743197> Se removió el rol **${role.name}** de <@${user.id}>.`);
+          embed.setDescription(`<:check:1286772042657566780> Se **removió** el rol **${role.name}** de <@${user.id}>.`);
         }
       }
 
-      return interaction.reply({ embeds: [embed], ephemeral: true });
+      return interaction.reply({ embeds: [embed], ephemeral: false });
 
     } else if (option === "all") {
       // Añadir o remover el rol a todos los miembros
       const members = await guild.members.fetch();
-      const embed = new EmbedBuilder().setColor(action === "add" ? "#79E096" : "#F87171");
+      const embed = new EmbedBuilder().setColor("#79E096");
 
       let affectedMembers = 0;
       for (const member of members.values()) {
@@ -116,7 +116,7 @@ module.exports = {
       }
 
       embed.setDescription(
-        `<:check:1286772042657566780> Se ha ${action === "add" ? "añadido" : "removido"} el rol **${role.name}** ${affectedMembers > 0 ? `a ${affectedMembers} miembro(s).` : "pero no hubo cambios."}`
+        `<:check:1286772042657566780> Se ha ${action === "add" ? "**añadido**" : "**removido**"} el rol **${role.name}** ${affectedMembers > 0 ? `a ${affectedMembers} miembro(s).` : "pero no hubo cambios."}`
       );
 
       return interaction.reply({ embeds: [embed] });

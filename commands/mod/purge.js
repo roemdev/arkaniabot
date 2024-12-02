@@ -21,7 +21,7 @@ module.exports = {
         if (cantidad < 1 || cantidad > 1000) {
             const invalidAmountEmbed = new EmbedBuilder()
                 .setColor("#F87171")
-                .setDescription('<:decline:1286772064765743197> La cantidad debe estar entre 1 y 1000 mensajes.');
+                .setDescription('<:deny:1313237501359558809> La cantidad debe estar entre 1 y 1000 mensajes.');
             return interaction.reply({ embeds: [invalidAmountEmbed], ephemeral: true });
         }
 
@@ -69,7 +69,7 @@ module.exports = {
         // Respuesta final
         const successEmbed = new EmbedBuilder()
             .setColor("#79E096")
-            .setDescription(`<:check:1286772042657566780> Se han eliminado \`${totalDeleted}\` mensajes${usuario ? ` de **${usuario.tag}**` : ''}.`);
+            .setDescription(`<:check:1313237490395648021> Se han eliminado \`${totalDeleted}\` mensajes${usuario ? ` de **${usuario.tag}**` : ''}.`);
         await interaction.reply({ embeds: [successEmbed], ephemeral: true });
     },
 };

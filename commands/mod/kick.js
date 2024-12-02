@@ -38,7 +38,7 @@ module.exports = {
                 embeds: [
                     new EmbedBuilder()
                         .setColor('#F87171')
-                        .setDescription('<:decline:1286772064765743197> No tienes permiso para usar este comando.')
+                        .setDescription('<:deny:1313237501359558809> No tienes permiso para usar este comando.')
                 ],
                 ephemeral: true
             });
@@ -67,7 +67,7 @@ module.exports = {
                 embeds: [
                     new EmbedBuilder()
                         .setColor('#F87171')
-                        .setDescription(`<:decline:1286772064765743197> Has alcanzado el límite de expulsiones (${maxExpulsiones}/${maxExpulsiones}). Podrás volver a expulsar <t:${reinicioTimestamp}:R>.`)
+                        .setDescription(`<:deny:1313237501359558809> Has alcanzado el límite de expulsiones (${maxExpulsiones}/${maxExpulsiones}). Podrás volver a expulsar <t:${reinicioTimestamp}:R>.`)
                 ],
                 ephemeral: true
             });
@@ -79,7 +79,7 @@ module.exports = {
                 embeds: [
                     new EmbedBuilder()
                         .setColor('#F87171')
-                        .setDescription('<:decline:1286772064765743197> No puedo expulsar a este usuario. Verifica que el usuario exista o que tenga un rol inferior al mío.')
+                        .setDescription('<:deny:1313237501359558809> No puedo expulsar a este usuario. Verifica que el usuario exista o que tenga un rol inferior al mío.')
                 ],
                 ephemeral: true
             });
@@ -118,7 +118,7 @@ module.exports = {
                 embeds: [
                     new EmbedBuilder()
                         .setColor('#79E096')
-                        .setDescription(`<:check:1286772042657566780> El usuario **${usuario.tag}** ha sido expulsado exitosamente.\nExpulsiones restantes (${expulsionesRestantes}/${maxExpulsiones}). Reinicio: <t:${reinicioTimestamp}:R>.`)
+                        .setDescription(`<:check:1313237490395648021> El usuario **${usuario.tag}** ha sido expulsado exitosamente.\nExpulsiones restantes (${expulsionesRestantes}/${maxExpulsiones}). Reinicio: <t:${reinicioTimestamp}:R>.`)
                 ],
                 ephemeral: true
             });
@@ -137,7 +137,7 @@ module.exports = {
                 embeds: [
                     new EmbedBuilder()
                         .setColor('#F87171')
-                        .setDescription('<:decline:1286772064765743197> Ocurrió un error al intentar expulsar al usuario.')
+                        .setDescription('<:deny:1313237501359558809> Ocurrió un error al intentar expulsar al usuario.')
                 ],
                 ephemeral: true
             });

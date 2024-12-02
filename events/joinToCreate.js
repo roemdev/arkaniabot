@@ -9,7 +9,7 @@ module.exports = {
         const guild = newState.guild;
 
         // ID del canal de voz "base" donde se generarán nuevos canales
-        const canalBaseID = '1312872660715175956';
+        const canalBaseID = '1312869821209252012';
 
         // Si el usuario entra al canal base
         if (newState.channelId === canalBaseID && oldState.channelId !== canalBaseID) {
@@ -17,13 +17,13 @@ module.exports = {
 
             // Crear un nuevo canal de voz con el nombre del usuario
             const nuevoCanal = await guild.channels.create({
-                name: `${miembro.displayName}`, // Usamos el nombre del miembro
+                name: `${miembro.user.username}`, // Usar miembro.user para acceder al nombre de usuario
                 type: ChannelType.GuildVoice,
-                parent: newState.channel.parent,
+                parent: newState.channel?.parent || null, // Asegurarse de manejar parent nulo
                 permissionOverwrites: [
                     {
                         id: miembro.id,
-                        allow: ['Connect', 'Speak'], 
+                        allow: ['Connect', 'Speak'],
                     },
                 ],
             });
@@ -31,18 +31,18 @@ module.exports = {
             // Mover al usuario al nuevo canal
             await miembro.voice.setChannel(nuevoCanal);
 
-            // Agregar el canal al mapa
-            voiceChannelsMap.set(nuevoCanal.id, nuevoCanal);
+            // Agregar el canal al mapa con el ID del propietario
+            voiceChannelsMap.set(nuevoCanal.id, miembro.id); 
         }
 
         // Si un canal creado dinámicamente queda vacío, eliminarlo inmediatamente
         if (oldState.channelId && voiceChannelsMap.has(oldState.channelId)) {
-            const canal = voiceChannelsMap.get(oldState.channelId);
+            const canal = oldState.channel;
 
             if (canal.members.size === 0) {
                 try {
                     await canal.delete(); // Eliminar el canal inmediatamente
-                    voiceChannelsMap.delete(canal.id); // Removerlo del mapa
+                    voiceChannelsMap.delete(oldState.channelId); // Removerlo del mapa
                 } catch (error) {
                     console.error(`Error al eliminar el canal de voz: ${error.message}`);
                 }
@@ -50,3 +50,6 @@ module.exports = {
         }
     },
 };
+
+// Exportar el mapa para usarlo en otros módulos
+module.exports.voiceChannelsMap = voiceChannelsMap;

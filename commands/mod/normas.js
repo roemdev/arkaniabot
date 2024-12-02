@@ -50,6 +50,6 @@ module.exports = {
     await interaction.channel.send({ embeds: [embedTitle, embedDesc, embedLvlTitle, embedLvlDesc, embedVIPTitle, embedVIPDesc] });
 
     // Confirmar la ejecución de la interacción para evitar errores
-    await interaction.reply({ content: "Normas enviadas.", ephemeral: true });
+    await interaction.reply({ content: "<:check:1313237490395648021> normas enviadas.", ephemeral: true });
   },
 };

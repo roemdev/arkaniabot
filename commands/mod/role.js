@@ -86,14 +86,14 @@ module.exports = {
           embed.setDescription(`El usuario <@${user.id}> ya tiene el rol **${role.name}**.`);
         } else {
           await targetMember.roles.add(role);
-          embed.setDescription(`<:check:1286772042657566780> Se **añadió** el rol **${role.name}** a <@${user.id}>.`);
+          embed.setDescription(`<:check:1313237490395648021> Se **añadió** el rol **${role.name}** a <@${user.id}>.`);
         }
       } else if (action === "remove") {
         if (!targetMember.roles.cache.has(role.id)) {
           embed.setDescription(`El usuario <@${user.id}> no tiene el rol **${role.name}**.`);
         } else {
           await targetMember.roles.remove(role);
-          embed.setDescription(`<:check:1286772042657566780> Se **removió** el rol **${role.name}** de <@${user.id}>.`);
+          embed.setDescription(`<:check:1313237490395648021> Se **removió** el rol **${role.name}** de <@${user.id}>.`);
         }
       }
 
@@ -116,7 +116,7 @@ module.exports = {
       }
 
       embed.setDescription(
-        `<:check:1286772042657566780> Se ha ${action === "add" ? "**añadido**" : "**removido**"} el rol **${role.name}** ${affectedMembers > 0 ? `a ${affectedMembers} miembro(s).` : "pero no hubo cambios."}`
+        `<:check:1313237490395648021> Se ha ${action === "add" ? "**añadido**" : "**removido**"} el rol **${role.name}** ${affectedMembers > 0 ? `a ${affectedMembers} miembro(s).` : "pero no hubo cambios."}`
       );
 
       return interaction.reply({ embeds: [embed] });

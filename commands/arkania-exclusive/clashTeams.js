@@ -22,7 +22,7 @@ module.exports = {
       embeds: [
         new EmbedBuilder()
           .setColor("#79E096")
-          .setDescription("<:check:1286772042657566780> Equipos enviados")
+          .setDescription("<:check:1313237490395648021> Equipos enviados")
       ],
       ephemeral: true,
     });
@@ -44,7 +44,7 @@ module.exports = {
         embeds: [
           new EmbedBuilder()
             .setColor("#F87171")
-            .setDescription("<:decline:1286772064765743197> No se encontraron roles válidos. Asegúrate de ingresar IDs o nombres correctos."),
+            .setDescription("<:deny:1313237501359558809> No se encontraron roles válidos. Asegúrate de ingresar IDs o nombres correctos."),
         ],
       });
     }
@@ -96,14 +96,14 @@ module.exports = {
         if (membersInRole >= MAX_MEMBERS_PER_TEAM) {
           embedReply
             .setColor("#F87171")
-            .setDescription(`<:info:1286772089046700094> El equipo **${clickedRole.name}** ya está lleno. (${MAX_MEMBERS_PER_TEAM}/${MAX_MEMBERS_PER_TEAM})`);
+            .setDescription(`<:advise:1313237521634689107> El equipo **${clickedRole.name}** ya está lleno. (${MAX_MEMBERS_PER_TEAM}/${MAX_MEMBERS_PER_TEAM})`);
           return await i.reply({ embeds: [embedReply], ephemeral: true });
         }
 
         if (currentRole?.id === clickedRole.id) {
           embedReply
             .setColor("#FFC868")
-            .setDescription(`<:info:1286772089046700094> Ya perteneces al equipo **${clickedRole.name}**.`);
+            .setDescription(`<:advise:1313237521634689107> Ya perteneces al equipo **${clickedRole.name}**.`);
 
           const abandonButton = new ButtonBuilder()
             .setCustomId(`abandon_${clickedRole.id}`)
@@ -118,7 +118,7 @@ module.exports = {
           embedReply
             .setColor("#FFC868")
             .setDescription(
-              `<:info:1286772089046700094> Ya perteneces al equipo **${currentRole.name}**. ¿Quieres cambiarte al equipo **${clickedRole.name}**?`
+              `<:advise:1313237521634689107> Ya perteneces al equipo **${currentRole.name}**. ¿Quieres cambiarte al equipo **${clickedRole.name}**?`
             );
 
           const confirmButton = new ButtonBuilder()
@@ -133,7 +133,7 @@ module.exports = {
         await i.member.roles.add(clickedRole);
         embedReply
           .setColor("#79E096")
-          .setDescription(`<:check:1286772042657566780> ¡Te has unido al equipo **${clickedRole.name}**! (${membersInRole + 1}/${MAX_MEMBERS_PER_TEAM})`);
+          .setDescription(`<:check:1313237490395648021> ¡Te has unido al equipo **${clickedRole.name}**! (${membersInRole + 1}/${MAX_MEMBERS_PER_TEAM})`);
         await i.reply({ embeds: [embedReply], ephemeral: true });
 
         // Actualizar los botones con los nuevos cupos
@@ -145,14 +145,14 @@ module.exports = {
         if (!currentRole || currentRole.id !== targetRole.id) {
           embedReply
             .setColor("#FFC868")
-            .setDescription("<:info:1286772089046700094> No perteneces a este equipo.");
+            .setDescription("<:advise:1313237521634689107> No perteneces a este equipo.");
           return await i.reply({ embeds: [embedReply], ephemeral: true });
         }
 
         await i.member.roles.remove(targetRole);
         embedReply
           .setColor("#79E096")
-          .setDescription(`<:check:1286772042657566780> Has abandonado el equipo **${targetRole.name}**.`);
+          .setDescription(`<:check:1313237490395648021> Has abandonado el equipo **${targetRole.name}**.`);
 
         await i.reply({ embeds: [embedReply], ephemeral: true });
 
@@ -166,7 +166,7 @@ module.exports = {
         if (membersInRole >= MAX_MEMBERS_PER_TEAM) {
           embedReply
             .setColor("#F87171")
-            .setDescription(`<:info:1286772089046700094> El equipo **${targetRole.name}** ya está lleno. (${MAX_MEMBERS_PER_TEAM}/${MAX_MEMBERS_PER_TEAM})`);
+            .setDescription(`<:advise:1313237521634689107> El equipo **${targetRole.name}** ya está lleno. (${MAX_MEMBERS_PER_TEAM}/${MAX_MEMBERS_PER_TEAM})`);
           return await i.reply({ embeds: [embedReply], ephemeral: true });
         }
 
@@ -175,7 +175,7 @@ module.exports = {
 
         embedReply
           .setColor("#79E096")
-          .setDescription(`<:check:1286772042657566780> Has cambiado al equipo **${targetRole.name}**. (${membersInRole + 1}/${MAX_MEMBERS_PER_TEAM})`);
+          .setDescription(`<:check:1313237490395648021> Has cambiado al equipo **${targetRole.name}**. (${membersInRole + 1}/${MAX_MEMBERS_PER_TEAM})`);
 
         await i.reply({ embeds: [embedReply], ephemeral: true });
 

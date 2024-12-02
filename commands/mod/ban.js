@@ -37,7 +37,7 @@ module.exports = {
                 embeds: [
                     new EmbedBuilder()
                         .setColor('#F87171')
-                        .setDescription('<:decline:1286772064765743197> No tienes permiso para usar este comando.')
+                        .setDescription('<:deny:1313237501359558809> No tienes permiso para usar este comando.')
                 ],
                 ephemeral: true
             });
@@ -64,7 +64,7 @@ module.exports = {
                 embeds: [
                     new EmbedBuilder()
                         .setColor('#F87171')
-                        .setDescription(`<:decline:1286772064765743197> Has alcanzado el límite de baneos (${maxBaneos}/${maxBaneos}). Podrás volver a banear <t:${reinicioTimestamp}:R>.`)
+                        .setDescription(`<:deny:1313237501359558809> Has alcanzado el límite de baneos (${maxBaneos}/${maxBaneos}). Podrás volver a banear <t:${reinicioTimestamp}:R>.`)
                 ],
                 ephemeral: true
             });
@@ -76,7 +76,7 @@ module.exports = {
                 embeds: [
                     new EmbedBuilder()
                         .setColor('#F87171')
-                        .setDescription('<:decline:1286772064765743197> No puedo banear a este usuario. Verifica que el usuario exista o que tenga un rol inferior al mío.')
+                        .setDescription('<:deny:1313237501359558809> No puedo banear a este usuario. Verifica que el usuario exista o que tenga un rol inferior al mío.')
                 ],
                 ephemeral: true
             });
@@ -112,7 +112,7 @@ module.exports = {
                 embeds: [
                     new EmbedBuilder()
                         .setColor('#79E096')
-                        .setDescription(`<:check:1286772042657566780> El usuario **${usuario.tag}** ha sido baneado exitosamente.\nBaneos restantes (${baneosRestantes}/${maxBaneos}). Reinicio: <t:${reinicioTimestamp}:R>.`)
+                        .setDescription(`<:check:1313237490395648021> El usuario **${usuario.tag}** ha sido baneado exitosamente.\nBaneos restantes (${baneosRestantes}/${maxBaneos}). Reinicio: <t:${reinicioTimestamp}:R>.`)
                 ],
                 ephemeral: true
             });
@@ -130,7 +130,7 @@ module.exports = {
                 embeds: [
                     new EmbedBuilder()
                         .setColor('#F87171')
-                        .setDescription('<:decline:1286772064765743197> Ocurrió un error al intentar banear al usuario.')
+                        .setDescription('<:deny:1313237501359558809> Ocurrió un error al intentar banear al usuario.')
                 ],
                 ephemeral: true
             });

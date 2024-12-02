@@ -21,7 +21,7 @@ module.exports = {
                         .setDescription('La imagen de los resultados.')
                         .setRequired(true))),
     async execute(interaction) {
-        const userIdAllowed = '271683421065969664'; // Reemplaza con tu ID de usuario
+        const userIdAllowed = '271683421065969664';
         const resultadosPath = path.join(__dirname, 'resultados.png');
 
         if (interaction.options.getSubcommand() === 'ver') {
@@ -31,7 +31,7 @@ module.exports = {
             } else {
                 const embed = new EmbedBuilder()
                     .setColor('#F87171') // Rojo (negativo)
-                    .setDescription('<:decline:1286772064765743197> No hay resultados cargados actualmente.');
+                    .setDescription('<:deny:1313237501359558809> No hay resultados cargados actualmente.');
                 await interaction.reply({ embeds: [embed], ephemeral: true });
             }
         } else if (interaction.options.getSubcommand() === 'cargar') {
@@ -39,7 +39,7 @@ module.exports = {
             if (interaction.user.id !== userIdAllowed) {
                 const embed = new EmbedBuilder()
                     .setColor('#F87171') // Rojo (negativo)
-                    .setDescription('<:decline:1286772064765743197> No tienes permiso para usar este comando.');
+                    .setDescription('<:deny:1313237501359558809> No tienes permiso para usar este comando.');
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
@@ -48,7 +48,7 @@ module.exports = {
             if (!imagen.contentType.startsWith('image/')) {
                 const embed = new EmbedBuilder()
                     .setColor('#F87171') // Rojo (negativo)
-                    .setDescription('<:decline:1286772064765743197> El archivo cargado no es una imagen válida.');
+                    .setDescription('<:deny:1313237501359558809> El archivo cargado no es una imagen válida.');
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
@@ -60,7 +60,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setColor('#79E096') // Verde (positivo)
-                .setDescription('<:check:1286772042657566780> ¡Imagen de resultados cargada exitosamente!');
+                .setDescription('<:check:1313237490395648021> ¡Imagen de resultados cargada exitosamente!');
             await interaction.reply({ embeds: [embed], ephemeral: true });
         }
     },

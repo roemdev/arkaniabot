@@ -11,7 +11,7 @@ module.exports = {
         // Confirmar ejecución del comando
         const confirmationEmbed = new EmbedBuilder()
             .setColor('#79E096')
-            .setDescription('<:check:1286772042657566780> El comando para el torneo fue enviado con éxito.');
+            .setDescription('<:check:1313237490395648021> El comando para el torneo fue enviado con éxito.');
 
         await interaction.reply({ embeds: [confirmationEmbed], ephemeral: true });
 
@@ -123,7 +123,7 @@ module.exports = {
 
                 const confirmationEmbed = new EmbedBuilder()
                     .setColor('#79E096')
-                    .setDescription('<:check:1286772042657566780> Tu solicitud de inscripción ha sido enviada correctamente. Pronto recibirás una respuesta.');
+                    .setDescription('<:check:1313237490395648021> Tu solicitud de inscripción ha sido enviada correctamente. Pronto recibirás una respuesta.');
 
                 await modalInteraction.reply({ embeds: [confirmationEmbed], ephemeral: true });
 
@@ -179,14 +179,14 @@ module.exports = {
                         // Respuesta al moderador
                         const embedAprobadoModerador = new EmbedBuilder()
                             .setColor('#79E096') // Verde
-                            .setDescription('<:check:1286772042657566780> **Solicitud aprobada.** El jugador ha sido inscrito correctamente.');
+                            .setDescription('<:check:1313237490395648021> **Solicitud aprobada.** El jugador ha sido inscrito correctamente.');
                     
                         await i.reply({ embeds: [embedAprobadoModerador], ephemeral: true });
                     
                         // Mensaje privado al usuario
                         const embedAprobadoUsuario = new EmbedBuilder()
                             .setColor('#79E096')
-                            .setDescription('<:check:1286772042657566780> ¡Felicidades! Tu solicitud ha sido aprobada. ¡Buena suerte en el torneo!');
+                            .setDescription('<:check:1313237490395648021> ¡Felicidades! Tu solicitud ha sido aprobada. ¡Buena suerte en el torneo!');
                     
                         await modalInteraction.user.send({ embeds: [embedAprobadoUsuario] });
                     
@@ -194,14 +194,14 @@ module.exports = {
                         // Respuesta al moderador
                         const embedDenegadoModerador = new EmbedBuilder()
                             .setColor('#F87171') // Rojo
-                            .setDescription('<:decline:1286772064765743197> **Solicitud denegada.** El jugador no cumple con los requisitos o los datos enviados son incorrectos.');
+                            .setDescription('<:deny:1313237501359558809> **Solicitud denegada.** El jugador no cumple con los requisitos o los datos enviados son incorrectos.');
                     
                         await i.reply({ embeds: [embedDenegadoModerador], ephemeral: true });
                     
                         // Mensaje privado al usuario
                         const embedDenegadoUsuario = new EmbedBuilder()
                             .setColor('#F87171')
-                            .setDescription('<:decline:1286772064765743197> Tu solicitud ha sido denegada. Confirma los datos enviados o contacta a un administrador para más información.');
+                            .setDescription('<:deny:1313237501359558809> Tu solicitud ha sido denegada. Confirma los datos enviados o contacta a un administrador para más información.');
                     
                         await modalInteraction.user.send({ embeds: [embedDenegadoUsuario] });
                     }

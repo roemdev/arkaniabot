@@ -94,7 +94,7 @@ module.exports = {
 
     const replyEmbed = new EmbedBuilder()
       .setColor("#79E096")
-      .setDescription("<:check:1286772042657566780> Sorteo creado exitosamente.");
+      .setDescription("<:check:1313237490395648021> Sorteo creado exitosamente.");
 
     await interaction.reply({ embeds: [replyEmbed], ephemeral: true });
 
@@ -119,7 +119,7 @@ module.exports = {
         if (requiredRole && !userRoles.has(requiredRole.id)) {
           embedReply
             .setColor("#F87171")
-            .setDescription(`<:decline:1286772064765743197> Necesitas el rol <@&${requiredRole.id}> para participar en este sorteo.`);
+            .setDescription(`<:deny:1313237501359558809> No has comprado una entrada para este sorteo.`);
           return await i.reply({ embeds: [embedReply], ephemeral: true });
         }
 
@@ -127,7 +127,7 @@ module.exports = {
         if (entries.includes(userId)) {
           embedReply
             .setColor("#FFC868")
-            .setDescription("<:info:1286772089046700094> ¡Ya estás participando en el sorteo!");
+            .setDescription("<:advise:1313237521634689107> ¡Ya estás participando en el sorteo!");
         } else {
           // Añadir entradas según roles
           let entriesQty = 1;
@@ -139,7 +139,7 @@ module.exports = {
 
           embedReply
             .setColor("#79E096")
-            .setDescription("<:check:1286772042657566780> ¡Te has inscrito correctamente!");
+            .setDescription("<:check:1313237490395648021> ¡Te has inscrito correctamente!");
 
           // Actualizar el embed principal
           const updatedEmbed = new EmbedBuilder()
@@ -161,7 +161,7 @@ module.exports = {
           .setTitle("Condiciones del sorteo")
           .setDescription(
             `Requisitos para participar:\n${
-              requiredRole ? `- Tener el rol <@&${requiredRole.id}>\n` : ""
+              requiredRole ? `- Haber comprado la entrada.\n` : ""
             }- Comprar la entrada (con monedas).\n\nBeneficios adicionales:\n- Los roles ${DOUBLE_ENTRY_ROLES.map(
               (role) => `<@&${role}>`
             ).join(" y ")} otorgan el doble de entradas (no acumulable).\n\n> Si ganas, tendrás 24 horas para contactar al organizador.`

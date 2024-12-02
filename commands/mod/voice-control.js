@@ -197,24 +197,27 @@ async function handleInfoButton(interaction, channel) {
         .get(channel.guild.id)
         ?.deny.has(PermissionsBitField.Flags.ViewChannel) || false;
 
-    const owner = voiceChannelsMap?.get(channel.id) || 'Desconocido';
-    const membersCount = channel.members.filter(member => !member.user.bot).size;
-    const creationDate = `<t:${Math.floor(channel.createdAt.getTime() / 1000)}:R>`;
-
-    const infoEmbed = new EmbedBuilder()
-        .setColor('#FFC868')
-        .setTitle('Información del Canal de Voz')
-        .setAuthor({ name: interaction.user.username, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
-        .setDescription(`**Dueño:** <@${owner}> (${owner.id})\n**Nombre:** ${channel.name}\n**Creado:** ${creationDate}\n**Online:** ${membersCount}`)
-        .addFields(
-            { name: 'Bloqueado', value: isLocked ? '<:check:1313237490395648021>' : '<:deny:1313237501359558809>', inline: true },
-            { name: 'Invisible', value: isHidden ? '<:check:1313237490395648021>' : '<:deny:1313237501359558809>', inline: true },
-        );
-
-    return interaction.reply({
-        embeds: [infoEmbed],
-        ephemeral: true,
-    });
+        const owner = voiceChannelsMap?.get(channel.id) || 'Desconocido';
+        const membersCount = channel.members.filter(member => !member.user.bot).size;
+        const creationDate = `<t:${Math.floor(channel.createdAt.getTime() / 1000)}:R>`;
+        
+        const infoEmbed = new EmbedBuilder()
+            .setColor('#FFC868')
+            .setTitle(`Nombre: ${channel.name}`)
+            .setAuthor({ name: 'Información del canal de voz', iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
+            .setDescription(`
+                **Dueño:** <@${owner}>)
+                **Creado:** ${creationDate}
+                **Bloqueado:** ${isLocked ? '<:check:1313237490395648021>' : '<:deny:1313237501359558809>'}
+                **Invisible:** ${isHidden ? '<:check:1313237490395648021>' : '<:deny:1313237501359558809>'}
+                **Online:** \`${membersCount}\`
+            `);
+        
+        return interaction.reply({
+            embeds: [infoEmbed],
+            ephemeral: true,
+        });
+        
 }
 
 function replyWithEmbed(interaction, color, description, ephemeral = false) {

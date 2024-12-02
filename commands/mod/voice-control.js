@@ -45,7 +45,7 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setColor('#FFC868')
             .setTitle('Controles del Canal de Voz')
-            .setDescription('Usa los botones para gestionar el canal de voz.');
+            .setDescription('🔒 `-` Bloquea el canal.\n👁️ `-` Oculta el canal.\n🔫 `-` Expulsa a alguien del canal.\n📑 `-` Muestra la información del canal.');
 
         // Enviar el mensaje con los controles
         const message = await interaction.channel.send({ 
@@ -204,14 +204,11 @@ async function handleInfoButton(interaction, channel) {
     const infoEmbed = new EmbedBuilder()
         .setColor('#FFC868')
         .setTitle('Información del Canal de Voz')
-        .setDescription(`Solicitado por: **${interaction.user.tag}**`)
+        .setAuthor({ name: interaction.user.username, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
+        .setDescription(`**Dueño:** <@${owner}> (${owner.id})\n**Nombre:** ${channel.name}\n**Creado:** ${creationDate}\n**Online:** ${membersCount}`)
         .addFields(
-            { name: '📛 Nombre del canal', value: channel.name, inline: true },
-            { name: '👤 Dueño del canal', value: owner, inline: true },
-            { name: '⏰ Creado', value: creationDate, inline: true },
-            { name: '🔒 Bloqueado', value: isLocked ? '<:deny:1313237501359558809> Sí' : 'No', inline: true },
-            { name: '👁️ Invisible', value: isHidden ? '<:deny:1313237501359558809> Sí' : 'No', inline: true },
-            { name: '👥 Miembros conectados', value: `${membersCount}`, inline: true },
+            { name: 'Bloqueado', value: isLocked ? '<:check:1313237490395648021>' : '<:deny:1313237501359558809>', inline: true },
+            { name: 'Invisible', value: isHidden ? '<:check:1313237490395648021>' : '<:deny:1313237501359558809>', inline: true },
         );
 
     return interaction.reply({

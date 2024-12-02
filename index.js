@@ -66,13 +66,13 @@ client.on("messageCreate", async (message) => {
     if (message.author.id !== process.env.AUTHORIZED_USER_ID) {
       const noPermissionEmbed = new EmbedBuilder()
         .setColor("#F87171")
-        .setDescription("<:decline:1286772064765743197> No tienes permisos para reiniciar el bot.");
+        .setDescription("<:deny:1313237501359558809> No tienes permisos para reiniciar el bot.");
       return message.channel.send({ embeds: [noPermissionEmbed] });
     }
 
     const restartEmbed = new EmbedBuilder()
       .setColor("#79E096")
-      .setDescription("<:check:1286772042657566780> El bot se está reiniciando...");
+      .setDescription("<:check:1313237490395648021> El bot se está reiniciando...");
     await message.channel.send({ embeds: [restartEmbed] });
     process.exit(0);
   }

@@ -43,9 +43,12 @@ module.exports = {
 
         // Embed inicial
         const embed = new EmbedBuilder()
-            .setColor('#FFC868')
-            .setTitle('Controles del Canal de Voz')
-            .setDescription('🔒 `-` Bloquea el canal.\n👁️ `-` Oculta el canal.\n🔫 `-` Expulsa a alguien del canal.\n📑 `-` Muestra la información del canal.');
+            .setColor("NotQuiteBlack")
+            .setAuthor({ name: interaction.client.user.username, iconURL: interaction.client.user.displayAvatarURL({ dynamic: true }) })
+            .setTitle('Interfaz del VoiceMaster')
+            .setThumbnail(interaction.client.user.displayAvatarURL({ dynamic: true, size: 1024 }))
+            .setDescription('Haz clic en los botones de abajo para controlar tu canal de voz.')
+            .addFields({ name: "Uso de los botones", value: "🔒 — **Bloquear** el canal de voz.\n👁️ — **Ocultar** el canal de voz.\n🔫 — **Expulsar** a alguien del canal de voz.\n📑 — **Mostrar** la información del canal de voz." });
 
         // Enviar el mensaje con los controles
         const message = await interaction.channel.send({ 

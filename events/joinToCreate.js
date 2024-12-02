@@ -15,9 +15,9 @@ module.exports = {
         if (newState.channelId === canalBaseID && oldState.channelId !== canalBaseID) {
             const miembro = newState.member;
 
-            // Crear un nuevo canal de voz
+            // Crear un nuevo canal de voz con el nombre del usuario
             const nuevoCanal = await guild.channels.create({
-                name: `🔊╏voz-${voiceChannelsMap.size + 1}`,
+                name: `${miembro.displayName}`, // Usamos el nombre del miembro
                 type: ChannelType.GuildVoice,
                 parent: newState.channel.parent,
                 permissionOverwrites: [
@@ -35,18 +35,17 @@ module.exports = {
             voiceChannelsMap.set(nuevoCanal.id, nuevoCanal);
         }
 
-        // Si un canal creado dinámicamente queda vacío, eliminarlo después de 5 segundos
+        // Si un canal creado dinámicamente queda vacío, eliminarlo inmediatamente
         if (oldState.channelId && voiceChannelsMap.has(oldState.channelId)) {
             const canal = voiceChannelsMap.get(oldState.channelId);
 
             if (canal.members.size === 0) {
-                // Esperar 5 segundos antes de eliminar
-                setTimeout(async () => {
-                    if (canal.members.size === 0) {
-                        await canal.delete().catch(console.error);
-                        voiceChannelsMap.delete(canal.id);
-                    }
-                }, 5000);
+                try {
+                    await canal.delete(); // Eliminar el canal inmediatamente
+                    voiceChannelsMap.delete(canal.id); // Removerlo del mapa
+                } catch (error) {
+                    console.error(`Error al eliminar el canal de voz: ${error.message}`);
+                }
             }
         }
     },

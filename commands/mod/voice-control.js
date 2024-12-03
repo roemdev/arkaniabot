@@ -6,15 +6,18 @@ const {
     PermissionsBitField, 
     ButtonStyle, 
     StringSelectMenuBuilder, 
-    StringSelectMenuOptionBuilder 
+    StringSelectMenuOptionBuilder ,
+    PermissionFlagsBits
 } = require('discord.js');
 
-const { voiceChannelsMap } = require('../../events/joinToCreate'); // Importar el mapa correctamente
+const { voiceChannelsMap } = require('../../events/joinToCreate');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('voice-control')
-        .setDescription('Controla los permisos de un canal de voz con botones interactivos.'),
+        .setDescription('Controla los permisos de un canal de voz con botones interactivos.')
+        .setDefaultMemberPermissions(PermissionFlagsBits.MoveMembers),
+
 
     async execute(interaction) {
         const voiceChannelState = {};
@@ -65,7 +68,7 @@ module.exports = {
             const voiceChannel = i.member.voice.channel;
 
             if (!voiceChannel) {
-                return replyWithEmbed(i, '#F87171', '<:deny:1313237501359558809> No estás en un canal de voz.', true);
+                return replyWithEmbed(i, '#FFC868', `<:advise:1313237521634689107> <@${userId}>: No estás conectado a un **canal de voz**`, true);
             }
 
             if (i.customId === 'info') {
@@ -118,7 +121,7 @@ async function toggleChannelLock(interaction, channel, state) {
     replyWithEmbed(
         interaction,
         newState ? '#FFC868' : '#79E096',
-        newState ? '<:advise:1313237521634689107> Canal bloqueado.' : '<:check:1313237490395648021> Canal desbloqueado.',
+        newState ? `<:advise:1313237521634689107> <@${interaction.user.id}>: Tu **canal de voz** fue bloqueado.` : `<:check:1313237490395648021> <@${interaction.user.id}>: Tu **canal de voz** fue desbloqueado.`,
         true
     );
 }
@@ -138,7 +141,7 @@ async function toggleChannelVisibility(interaction, channel, state) {
     replyWithEmbed(
         interaction,
         newState ? '#FFC868' : '#79E096',
-        newState ? '<:advise:1313237521634689107> Canal invisible.' : '<:check:1313237490395648021> Canal visible.',
+        newState ? `<:advise:1313237521634689107> <@${interaction.user.id}>: Tu **canal de voz** ha sido oculto.` : `<:check:1313237490395648021> <@${interaction.user.id}>: Tu **canal de voz** ahora es visible.`,
         true
     );
 }
@@ -175,14 +178,20 @@ async function handleMemberKick(interaction, channel) {
         const memberId = selectInteraction.values[0];
         const member = channel.members.get(memberId);
 
-        if (member) {
+        if (!member === '271683421065969664') {
             await member.voice.disconnect();
             replyWithEmbed(
                 selectInteraction,
                 '#79E096',
-                `<:check:1313237490395648021> **${member.user.username}** ha sido expulsado del canal.`,
+                `<:check:1313237490395648021> <@${interaction.user.id}>: El usuario **${member.user.username}** ha sido expulsado de tu **canal de voz**.`,
                 true
             );
+        } else {
+            replyWithEmbed(
+                selectInteraction,
+                '#F87171',
+                `<:deny:1313237501359558809> <@${interaction.user.id}>: No puedo expulsarte de tu **canal de voz**.`
+            )
         }
     });
 }
@@ -209,7 +218,7 @@ async function handleInfoButton(interaction, channel) {
             .setTitle(`Nombre: ${channel.name}`)
             .setAuthor({ name: 'Información del canal de voz', iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
             .setDescription(`
-                **Dueño:** <@${owner}>)
+                **Dueño:** <@${owner}>
                 **Creado:** ${creationDate}
                 **Bloqueado:** ${isLocked ? '<:check:1313237490395648021>' : '<:deny:1313237501359558809>'}
                 **Invisible:** ${isHidden ? '<:check:1313237490395648021>' : '<:deny:1313237501359558809>'}

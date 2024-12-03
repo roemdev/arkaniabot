@@ -34,11 +34,17 @@ function readGiveawayFile() {
 // Utilidad: Guardar datos en el archivo JSON
 function saveGiveawayFile(data) {
   try {
-    fs.writeFileSync(GIVEAWAY_FILE, JSON.stringify(data, null, 2));
+    let existingData = {};
+    if (fs.existsSync(GIVEAWAY_FILE)) {
+      existingData = JSON.parse(fs.readFileSync(GIVEAWAY_FILE, "utf-8"));
+    }
+    const updatedData = { ...existingData, ...data }; // Combina los datos existentes con los nuevos
+    fs.writeFileSync(GIVEAWAY_FILE, JSON.stringify(updatedData, null, 2));
   } catch (err) {
     console.error("Error al guardar el archivo JSON:", err);
   }
 }
+
 
 // Crear el embed de un sorteo
 function createGiveawayEmbed(prize, organizer, entriesCount, winners, endTimestamp) {
@@ -131,13 +137,17 @@ module.exports = {
       .setDescription("<:check:1313237490395648021> Sorteo creado exitosamente.");
     interaction.reply({ embeds: [replyEmbed], ephemeral: true });
 
-    // Guardar datos iniciales del sorteo
-    giveawayData.active = true;
-    giveawayData.prize = prize;
-    giveawayData.organizer = user.id;
-    giveawayData.endTimestamp = endTimestamp;
-    giveawayData.entries = [];
-    saveGiveawayFile(giveawayData);
+    // Actualizar datos del sorteo sin eliminar otros datos
+    const updatedGiveawayData = {
+      ...giveawayData,
+      active: true,
+      prize,
+      organizer: user.id,
+      endTimestamp,
+      entries: giveawayData.entries || [], // Mantén las entradas existentes si las hay
+    };
+    saveGiveawayFile(updatedGiveawayData);
+
 
     const filter = (i) => ["enter", "requirements"].includes(i.customId);
     const collector = channel.createMessageComponentCollector({ filter, time: durationMs });

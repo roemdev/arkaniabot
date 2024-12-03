@@ -9,7 +9,7 @@ module.exports = {
         const guild = newState.guild;
 
         // ID del canal de voz "base" donde se generarán nuevos canales
-        const canalBaseID = '1312869821209252012';
+        const canalBaseID = '1312872660715175956';
 
         // Si el usuario entra al canal base
         if (newState.channelId === canalBaseID && oldState.channelId !== canalBaseID) {

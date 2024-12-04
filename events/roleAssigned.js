@@ -1,28 +1,37 @@
-const { EmbedBuilder } = require('discord.js');
+const { Events, EmbedBuilder } = require('discord.js');
 
 module.exports = {
-  name: 'guildMemberUpdate',
+  name: Events.GuildMemberUpdate,
   async execute(oldMember, newMember) {
-    // ID del rol que deseas monitorear
-    const roleId = '1311791787643375636';
+    const monitoredRoleId = "1241182617504579594";
+    const notificationChannelId = "1173781298721063014";
 
-    // Verificar si el rol fue asignado
-    const roleAdded = !oldMember.roles.cache.has(roleId) && newMember.roles.cache.has(roleId);
-    if (!roleAdded) return;
+    const roleAdded = !oldMember.roles.cache.has(monitoredRoleId) &&
+                      newMember.roles.cache.has(monitoredRoleId);
 
-    // Crear embed
-    const embed = new EmbedBuilder()
-      .setColor('#79E096') // Color positivo
-      .setDescription(`Hola, ${newMember}!`) // Saludo al usuario
-      .setTimestamp();
+    if (roleAdded) {
+      const channel = newMember.guild.channels.cache.get(notificationChannelId);
 
-    // Enviar mensaje en el canal por defecto o un canal específico
-    const channel = newMember.guild.systemChannel || newMember.guild.channels.cache.find(c => c.type === 0);
-    if (!channel) return;
+      if (!channel) return;
 
-    channel.send({
-      content: `${newMember}`, // Etiqueta al usuario fuera del embed
-      embeds: [embed],
-    });
+      const totalBoosts = newMember.guild.premiumSubscriptionCount;
+      const notificationEmbed = createNotificationEmbed(newMember, totalBoosts);
+      await channel.send({
+        content: `<@${newMember.user.id}>`,
+        embeds: [notificationEmbed],
+      }).catch(console.error);
+    }
   },
 };
+
+function createNotificationEmbed(member, totalBoosts) {
+  return new EmbedBuilder()
+    .setAuthor({ name: member.user.tag, iconURL: member.user.displayAvatarURL() })
+    .setTitle(`<:boost:1313684699411124286> __${totalBoosts} ${totalBoosts === 1 || totalBoosts === 0 ? 'boost' : 'boosts'}__`)
+    .setColor("#2b2d31")
+    .setDescription(
+      `* ¡Gracias por el boost!\n` +
+      `* Haz clic [aquí](https://discord.com/channels/815280751586050098/1247632279027843152) para ver tus beneficios.`
+    )
+    .setThumbnail(member.user.displayAvatarURL());
+}

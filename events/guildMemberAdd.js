@@ -31,7 +31,7 @@ function createWelcomeEmbed(member) {
     .setAuthor({ name: member.user.tag, iconURL: member.user.displayAvatarURL() })
     .setTitle("Bienvenido a Arkania")
     .setColor("#2b2d31")
-    .setDescription(`Ven a compartir con nosotros en <#1173781298721063014>\n\nRevisa <#1257757995996282880> y <#1282217741851561986>.`)
+    .setDescription(`Comparte con nosotros en <#1173781298721063014>.\n\nRevisa <#1257757995996282880> y <#1282215373688799284>.`)
     .setThumbnail(member.user.displayAvatarURL())
     .setImage("https://cdn.discordapp.com/attachments/860528686403158046/1108384769147932682/ezgif-2-f41b6758ff.gif?ex=66e4e601&is=66e39481&hm=13f16536ca4603babfbfada027ed6b87302ede61a304a9893c1394b46661090e&")
     .setFooter({ text: `Ahora somos ${member.guild.memberCount} miembros. ¡Disfruta tu estancia!` });

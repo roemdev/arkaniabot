@@ -3,10 +3,10 @@ const { Events, EmbedBuilder } = require('discord.js');
 module.exports = {
   name: Events.GuildMemberUpdate,
   async execute(oldMember, newMember) {
-    const booster = "1311799987474010113";
-    const vip = "1311800020697354250";
+    const booster = "1241182617504579594";
+    const vip = "1303816942326648884";
     const monitoredRoles = [booster, vip];
-    const notificationChannelId = "1273453941056602152";
+    const notificationChannelId = "1173781298721063014";
 
     const addedRoleId = monitoredRoles.find(roleId => 
       !oldMember.roles.cache.has(roleId) && newMember.roles.cache.has(roleId)

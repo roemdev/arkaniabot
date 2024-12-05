@@ -190,7 +190,8 @@ async function handleMemberKick(interaction, channel) {
             replyWithEmbed(
                 selectInteraction,
                 '#F87171',
-                `<:deny:1313237501359558809> <@${interaction.user.id}>: No puedo expulsarte de tu **canal de voz**.`
+                `<:deny:1313237501359558809> <@${interaction.user.id}>: No puedo expulsarte de tu **canal de voz**.`,
+                true
             )
         }
     });

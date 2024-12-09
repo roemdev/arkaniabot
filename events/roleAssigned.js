@@ -57,6 +57,5 @@ function createVipEmbed(member, totalVipMembers) {
       `* ¡Un nuevo VIP se alza!\n` +
       `* Haz clic [aquí](https://discord.com/channels/815280751586050098/1247632279027843152) para ver tus beneficios.`
     )
-    .setFooter({ text: "¡Disfruta de estos 30 días de beneficios!" })
     .setThumbnail(member.user.displayAvatarURL());
 }

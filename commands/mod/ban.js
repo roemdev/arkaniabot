@@ -122,7 +122,7 @@ module.exports = {
                 embeds: [
                     new EmbedBuilder()
                         .setColor('#79E096')
-                        .setDescription(`<:check:1313237490395648021> El miembro **${member.tag}** ha sido baneado exitosamente.\nBaneos restantes (${remainingBans}/${banLimit}). Reinicio: <t:${timestampReset}:R>.`)
+                        .setDescription(`<:check:1313237490395648021> El miembro **${member.tag}** ha sido **baneado**.\nBaneos restantes (${remainingBans}/${banLimit}). Reinicio: <t:${timestampReset}:R>.`)
                 ],
                 ephemeral: true
             });

@@ -40,13 +40,12 @@ module.exports = {
   async execute(interaction) {
     const { options, guild, member } = interaction;
 
-    // Opciones del comando
     const action = options.getString("acción");
     const role = options.getRole("rol");
     const option = options.getString("opción");
     const user = options.getUser("usuario");
 
-    // Verificar permisos
+    // Permission and hierarchy checks
     if (!member.permissions.has(PermissionFlagsBits.ManageRoles)) {
       return interaction.reply({
         content: "No tienes permisos para gestionar roles.",
@@ -54,7 +53,6 @@ module.exports = {
       });
     }
 
-    // Verificar jerarquía del rol
     if (role.position >= guild.members.me.roles.highest.position) {
       return interaction.reply({
         content: "No puedo gestionar este rol debido a su jerarquía.",
@@ -62,9 +60,8 @@ module.exports = {
       });
     }
 
-    // Ejecutar la acción
+    // Handle role assignment/removal
     if (option === "usuario") {
-      // Añadir o remover el rol a un usuario específico
       if (!user) {
         return interaction.reply({
           content: "Debes seleccionar un usuario para esta opción.",
@@ -81,36 +78,35 @@ module.exports = {
       }
 
       const embed = new EmbedBuilder().setColor(action === "add" ? "#79E096" : "#F87171");
-      if (action === "add") {
-        if (targetMember.roles.cache.has(role.id)) {
-          embed.setDescription(`El usuario <@${user.id}> ya tiene el rol **${role.name}**.`);
-        } else {
-          await targetMember.roles.add(role);
-          embed.setDescription(`<:check:1313237490395648021> Se **añadió** el rol **${role.name}** a <@${user.id}>.`);
-        }
-      } else if (action === "remove") {
-        if (!targetMember.roles.cache.has(role.id)) {
-          embed.setDescription(`El usuario <@${user.id}> no tiene el rol **${role.name}**.`);
-        } else {
-          await targetMember.roles.remove(role);
-          embed.setDescription(`<:check:1313237490395648021> Se **removió** el rol **${role.name}** de <@${user.id}>.`);
-        }
+      const roleAction = action === "add" ? targetMember.roles.add(role) : targetMember.roles.remove(role);
+      const hasRole = targetMember.roles.cache.has(role.id);
+
+      if ((action === "add" && hasRole) || (action === "remove" && !hasRole)) {
+        embed.setDescription(
+          `El usuario <@${user.id}> ${hasRole ? "ya tiene" : "no tiene"} el rol **${role.name}**.`
+        );
+      } else {
+        await roleAction.catch(console.error);
+        embed.setDescription(
+          `<:check:1313237490395648021> Se ${action === "add" ? "**añadió**" : "**removió**"} el rol **${role.name}** a <@${user.id}>.`
+        );
       }
 
       return interaction.reply({ embeds: [embed], ephemeral: false });
 
     } else if (option === "all") {
-      // Añadir o remover el rol a todos los miembros
       const members = await guild.members.fetch();
       const embed = new EmbedBuilder().setColor("#79E096");
-
       let affectedMembers = 0;
-      for (const member of members.values()) {
-        if (action === "add" && !member.roles.cache.has(role.id)) {
-          await member.roles.add(role).catch(() => null);
-          affectedMembers++;
-        } else if (action === "remove" && member.roles.cache.has(role.id)) {
-          await member.roles.remove(role).catch(() => null);
+
+      for (const guildMember of members.values()) {
+        const hasRole = guildMember.roles.cache.has(role.id);
+        const roleAction =
+          action === "add" && !hasRole ? guildMember.roles.add(role) :
+          action === "remove" && hasRole ? guildMember.roles.remove(role) : null;
+
+        if (roleAction) {
+          await roleAction.catch(() => null);
           affectedMembers++;
         }
       }

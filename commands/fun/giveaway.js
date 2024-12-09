@@ -159,14 +159,14 @@ module.exports = {
         if (requiredRole && !i.member.roles.cache.has(requiredRole.id)) {
           const embed = new EmbedBuilder()
             .setColor(WARNING_COLOR)
-            .setDescription("<:advise:1313237521634689107> No cumples con los requisitos para participar en **el sorteo**.");
+            .setDescription("<:advise:1313237521634689107> No cumples con los **requisitos** para participar en el sorteo.");
           return i.reply({ embeds: [embed], ephemeral: true });
         }
     
         if (giveawayData.entries.includes(userId)) {
           const embed = new EmbedBuilder()
             .setColor(WARNING_COLOR)
-            .setDescription("<:advise:1313237521634689107> Ya estás inscrito en **el sorteo**.");
+            .setDescription("<:advise:1313237521634689107> Ya estás **inscrit**o en el sorteo.");
           return i.reply({ embeds: [embed], ephemeral: true });
         }
     
@@ -186,7 +186,7 @@ module.exports = {
     
         const embed = new EmbedBuilder()
           .setColor(SUCCESS_COLOR)
-          .setDescription("<:check:1313237490395648021> ¡Te has inscrito en **el sorteo** correctamente!");
+          .setDescription("<:check:1313237490395648021> ¡Te has **inscrito** en el sorteo! ¡Buena suerte!");
         i.reply({ embeds: [embed], ephemeral: true });
       }
     

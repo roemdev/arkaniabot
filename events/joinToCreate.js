@@ -1,55 +1,53 @@
 const { Events, ChannelType } = require('discord.js');
 
-// Objeto para rastrear los canales creados dinámicamente
+// Map to track dynamically created voice channels
 const voiceChannelsMap = new Map();
 
 module.exports = {
-    name: Events.VoiceStateUpdate,
-    async execute(oldState, newState) {
-        const guild = newState.guild;
+  name: Events.VoiceStateUpdate,
+  async execute(oldState, newState) {
+    const guild = newState.guild;
+    const baseChannelId = '1312872660715175956';
 
-        // ID del canal de voz "base" donde se generarán nuevos canales
-        const canalBaseID = '1312872660715175956';
+    // User joins the base voice channel
+    if (newState.channelId === baseChannelId && oldState.channelId !== baseChannelId) {
+      const member = newState.member;
 
-        // Si el usuario entra al canal base
-        if (newState.channelId === canalBaseID && oldState.channelId !== canalBaseID) {
-            const miembro = newState.member;
+      // Create a new voice channel with the user's username
+      const newChannel = await guild.channels.create({
+        name: member.user.username,
+        type: ChannelType.GuildVoice,
+        parent: newState.channel?.parent || null,
+        permissionOverwrites: [
+          {
+            id: member.id,
+            allow: ['Connect', 'Speak'],
+          },
+        ],
+      });
 
-            // Crear un nuevo canal de voz con el nombre del usuario
-            const nuevoCanal = await guild.channels.create({
-                name: `${miembro.user.username}`, // Usar miembro.user para acceder al nombre de usuario
-                type: ChannelType.GuildVoice,
-                parent: newState.channel?.parent || null, // Asegurarse de manejar parent nulo
-                permissionOverwrites: [
-                    {
-                        id: miembro.id,
-                        allow: ['Connect', 'Speak'],
-                    },
-                ],
-            });
+      // Move the user to the newly created channel
+      await member.voice.setChannel(newChannel);
 
-            // Mover al usuario al nuevo canal
-            await miembro.voice.setChannel(nuevoCanal);
+      // Add the channel to the map with the owner's ID
+      voiceChannelsMap.set(newChannel.id, member.id);
+    }
 
-            // Agregar el canal al mapa con el ID del propietario
-            voiceChannelsMap.set(nuevoCanal.id, miembro.id); 
+    // Remove dynamically created voice channels when they are empty
+    if (oldState.channelId && voiceChannelsMap.has(oldState.channelId)) {
+      const channel = oldState.channel;
+
+      if (channel.members.size === 0) {
+        try {
+          await channel.delete();
+          voiceChannelsMap.delete(oldState.channelId);
+        } catch (error) {
+          console.error(`Failed to delete voice channel: ${error.message}`);
         }
-
-        // Si un canal creado dinámicamente queda vacío, eliminarlo inmediatamente
-        if (oldState.channelId && voiceChannelsMap.has(oldState.channelId)) {
-            const canal = oldState.channel;
-
-            if (canal.members.size === 0) {
-                try {
-                    await canal.delete(); // Eliminar el canal inmediatamente
-                    voiceChannelsMap.delete(oldState.channelId); // Removerlo del mapa
-                } catch (error) {
-                    console.error(`Error al eliminar el canal de voz: ${error.message}`);
-                }
-            }
-        }
-    },
+      }
+    }
+  },
 };
 
-// Exportar el mapa para usarlo en otros módulos
+// Export the map for use in other modules
 module.exports.voiceChannelsMap = voiceChannelsMap;

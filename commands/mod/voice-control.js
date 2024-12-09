@@ -68,7 +68,7 @@ module.exports = {
             const voiceChannel = i.member.voice.channel;
 
             if (!voiceChannel) {
-                return replyWithEmbed(i, '#FFC868', `<:advise:1313237521634689107> <@${userId}>: No estás conectado a un **canal de voz**`, true);
+                return replyWithEmbed(i, '#FFC868', `<:advise:1313237521634689107> No estás **conectado** a un canal de voz.`, true);
             }
 
             if (i.customId === 'info') {
@@ -78,7 +78,7 @@ module.exports = {
 
             const isOwner = voiceChannelsMap.get(voiceChannel.id) === i.user.id;;
             if (!isOwner) {
-                return replyWithEmbed(i, '#F87171', '<:deny:1313237501359558809> Solo el creador del canal puede usar este comando.', true);
+                return replyWithEmbed(i, '#F87171', '<:deny:1313237501359558809> Solo el **creador** del canal puede ejecutar esta acción.', true);
             }
 
             switch (i.customId) {
@@ -121,7 +121,7 @@ async function toggleChannelLock(interaction, channel, state) {
     replyWithEmbed(
         interaction,
         newState ? '#FFC868' : '#79E096',
-        newState ? `<:advise:1313237521634689107> <@${interaction.user.id}>: Tu **canal de voz** fue bloqueado.` : `<:check:1313237490395648021> <@${interaction.user.id}>: Tu **canal de voz** fue desbloqueado.`,
+        newState ? `<:advise:1313237521634689107> Tu canal de voz fue **bloqueado**.` : `<:check:1313237490395648021> Tu canal de voz fue **desbloqueado**.`,
         true
     );
 }
@@ -141,7 +141,7 @@ async function toggleChannelVisibility(interaction, channel, state) {
     replyWithEmbed(
         interaction,
         newState ? '#FFC868' : '#79E096',
-        newState ? `<:advise:1313237521634689107> <@${interaction.user.id}>: Tu **canal de voz** ha sido oculto.` : `<:check:1313237490395648021> <@${interaction.user.id}>: Tu **canal de voz** ahora es visible.`,
+        newState ? '<:advise:1313237521634689107> Tu canal de voz se ha **ocultado**.' : '<:check:1313237490395648021> Tu canal de voz ahora es **visible**.',
         true
     );
 }
@@ -150,7 +150,7 @@ async function handleMemberKick(interaction, channel) {
     const members = [...channel.members.values()].filter(member => !member.user.bot);
 
     if (members.length === 0) {
-        return replyWithEmbed(interaction, '#F87171', '<:deny:1313237501359558809> No hay miembros para expulsar.', true);
+        return replyWithEmbed(interaction, '#F87171', '<:deny:1313237501359558809> No hay miembros para **expulsar**.', true);
     }
 
     const options = members.map(member => new StringSelectMenuOptionBuilder()
@@ -183,14 +183,14 @@ async function handleMemberKick(interaction, channel) {
             replyWithEmbed(
                 selectInteraction,
                 '#79E096',
-                `<:check:1313237490395648021> <@${interaction.user.id}>: El usuario **${member.user.username}** ha sido expulsado de tu **canal de voz**.`,
+                `<:check:1313237490395648021> <@${interaction.user.id}>: El usuario **${member.user.username}** ha sido **expulsado** de tu canal de voz.`,
                 true
             );
         } else {
             replyWithEmbed(
                 selectInteraction,
                 '#F87171',
-                `<:deny:1313237501359558809> <@${interaction.user.id}>: No puedo expulsarte de tu **canal de voz**.`,
+                `<:deny:1313237501359558809> <@${interaction.user.id}>: No puedo **expulsarte** de tu canal de voz.`,
                 true
             )
         }
@@ -199,7 +199,7 @@ async function handleMemberKick(interaction, channel) {
 
 async function handleInfoButton(interaction, channel) {
     if (!channel) {
-        return replyWithEmbed(interaction, '#F87171', '<:deny:1313237501359558809> No estás en un canal de voz.', true);
+        return replyWithEmbed(interaction, '#F87171', '<:deny:1313237501359558809> No estás en un **canal de voz**.', true);
     }
 
     const isLocked = channel.permissionOverwrites.cache

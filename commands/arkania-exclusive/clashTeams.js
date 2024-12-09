@@ -7,7 +7,7 @@ const {
   PermissionsBitField 
 } = require("discord.js");
 
-const MAX_MEMBERS_PER_TEAM = 5; // Máximo de miembros por equipo
+const MAX_MEMBERS_PER_TEAM = 5;
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -104,7 +104,9 @@ module.exports = {
         const embedReply = new EmbedBuilder()
           .setColor("#2b2d31")
           .setTitle(`Información del equipo ${clickedRole.name}`)
-          .setDescription(`**Miembros actuales:**\n${membersList}\n\n${isAlreadyInTeam ? `> <:advise:1313237521634689107> <@${interaction.user.id}> Ya estás en este equipo.` : `> <:check:1313237490395648021> <@${interaction.user.id}> Puedes unirte a este equipo.`}`);
+          .setDescription(`**Miembros actuales:**\n${membersList}\n\n${isAlreadyInTeam
+            ? '> <:advise:1313237521634689107> Ya **estás** en este equipo.'
+            : '> <:check:1313237490395648021> Puedes **unirte** a este equipo.'}`);
 
         return interaction.reply({ embeds: [embedReply], components: [actionButtons], ephemeral: true });
       }
@@ -119,7 +121,7 @@ module.exports = {
             embeds: [
               new EmbedBuilder()
                 .setColor("#FFC868")
-                .setDescription(`<:advise:1313237521634689107> <@${interaction.user.id}>: El equipo ya está completo.`)
+                .setDescription('<:advise:1313237521634689107> El equipo ya está completo.')
             ],
             ephemeral: true,
           });
@@ -132,7 +134,7 @@ module.exports = {
           embeds: [
             new EmbedBuilder()
               .setColor("#79E096")
-              .setDescription(`<:check:1313237490395648021> <@${interaction.user.id}>: Te has unido al equipo **${targetRole.name}**.`)
+              .setDescription(`<:check:1313237490395648021> Te has unido al equipo **${targetRole.name}**. ¡Prepárate para la batalla!`)
           ],
           ephemeral: true,
         });
@@ -162,7 +164,7 @@ module.exports = {
           embeds: [
             new EmbedBuilder()
               .setColor("#FFC868")
-              .setDescription(`<:advise:1313237521634689107> <@${interaction.user.id}>: Has abandonado el equipo **${targetRole.name}**.`)
+              .setDescription('<:advise:1313237521634689107> Has abandonado el equipo **${targetRole.name}**.')
           ],
           ephemeral: true,
         });

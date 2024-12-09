@@ -5,11 +5,11 @@ module.exports = {
   once: true,
   execute(client) {
     console.log(`Bot ready! Logged in as ${client.user.tag}`);
-    // client.user.setPresence({
-    //   activities: [
-    //     { name: ` `, type: ActivityType.Competing },
-    //   ],
-    //   status: "online",
-    // });
+    client.user.setPresence({
+      activities: [
+        { name: '¡Tú formas Arkania!', type: ActivityType.Custom },
+      ],
+      status: "online",
+    });
   },
 };

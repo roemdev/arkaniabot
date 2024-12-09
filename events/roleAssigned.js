@@ -3,40 +3,43 @@ const { Events, EmbedBuilder } = require('discord.js');
 module.exports = {
   name: Events.GuildMemberUpdate,
   async execute(oldMember, newMember) {
-    const booster = "1241182617504579594";
-    const vip = "1303816942326648884";
-    const monitoredRoles = [booster, vip];
+    const boosterRoleId = "1241182617504579594";
+    const vipRoleId = "1303816942326648884";
+    const monitoredRoles = [boosterRoleId, vipRoleId];
     const notificationChannelId = "1173781298721063014";
 
-    const addedRoleId = monitoredRoles.find(roleId => 
+    const addedRoleId = monitoredRoles.find(roleId =>
       !oldMember.roles.cache.has(roleId) && newMember.roles.cache.has(roleId)
     );
-
     if (!addedRoleId) return;
 
-    const channel = newMember.guild.channels.cache.get(notificationChannelId);
-    if (!channel || !channel.isTextBased()) return;
+    const notificationChannel = newMember.guild.channels.cache.get(notificationChannelId);
+    if (!notificationChannel || !notificationChannel.isTextBased()) return;
 
     const totalBoosts = newMember.guild.premiumSubscriptionCount;
-    const totalVip = newMember.guild.members.cache.filter(member => 
-      member.roles.cache.has(vip)
+    const totalVipMembers = newMember.guild.members.cache.filter(member =>
+      member.roles.cache.has(vipRoleId)
     ).size;
 
-    const notificationEmbed = addedRoleId === booster
+    const notificationEmbed = addedRoleId === boosterRoleId
       ? createBoosterEmbed(newMember, totalBoosts)
-      : createVipEmbed(newMember, totalVip);
+      : createVipEmbed(newMember, totalVipMembers);
 
-    await channel.send({
-      content: `<@${newMember.user.id}>`,
-      embeds: [notificationEmbed],
-    }).catch(console.error);
+    try {
+      await notificationChannel.send({
+        content: `<@${newMember.user.id}>`,
+        embeds: [notificationEmbed],
+      });
+    } catch (error) {
+      console.error("Failed to send notification:", error);
+    }
   },
 };
 
 function createBoosterEmbed(member, totalBoosts) {
   return new EmbedBuilder()
     .setAuthor({ name: member.user.tag, iconURL: member.user.displayAvatarURL() })
-    .setTitle(`<:boost:1313684699411124286> __${totalBoosts} ${totalBoosts === 1 || totalBoosts === 0 ? 'boost' : 'boosts'}__`)
+    .setTitle(`<:boost:1313684699411124286> __${totalBoosts} ${totalBoosts === 1 ? 'boost' : 'boosts'}__`)
     .setColor("#2b2d31")
     .setDescription(
       `* ¡Gracias por esa mejora épica!\n` +
@@ -45,10 +48,10 @@ function createBoosterEmbed(member, totalBoosts) {
     .setThumbnail(member.user.displayAvatarURL());
 }
 
-function createVipEmbed(member, totalVip) {
+function createVipEmbed(member, totalVipMembers) {
   return new EmbedBuilder()
     .setAuthor({ name: member.user.tag, iconURL: member.user.displayAvatarURL() })
-    .setTitle(`💎 __${totalVip} VIP__`)
+    .setTitle(`⭐ __${totalVipMembers} VIP__`)
     .setColor("#2b2d31")
     .setDescription(
       `* ¡Un nuevo VIP se alza!\n` +

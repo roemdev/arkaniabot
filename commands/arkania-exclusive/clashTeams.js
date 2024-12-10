@@ -164,7 +164,7 @@ module.exports = {
           embeds: [
             new EmbedBuilder()
               .setColor("#FFC868")
-              .setDescription('<:advise:1313237521634689107> Has abandonado el equipo **${targetRole.name}**.')
+              .setDescription(`<:advise:1313237521634689107> Has abandonado el equipo **${targetRole.name}**.`)
           ],
           ephemeral: true,
         });

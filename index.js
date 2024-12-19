@@ -80,8 +80,8 @@ client.on("messageCreate", async (message) => {
 
 // Registrar comandos y conectar el bot
 (async () => {
-  const commandsPath = path.join(__dirname, "commands");
-  const eventsPath = path.join(__dirname, "events");
+  const commandsPath = path.join(__dirname, "./src/commands");
+  const eventsPath = path.join(__dirname, "./src/events");
   const token = process.env.DISCORD_TOKEN;
   const clientId = process.env.CLIENT_ID;
   const guildId = process.env.GUILD_ID;

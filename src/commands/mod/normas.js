@@ -27,7 +27,7 @@ module.exports = {
     const embedRolesPorNivel = new EmbedBuilder()
       .setColor("NotQuiteBlack")
       .setTitle("⬆️ ROLES POR NIVEL")
-      .setDescription("Alcanzar ciertos niveles te otorgará roles especiales con beneficios:\n"+
+      .setDescription(
         "`♦` <@&1234893710588645426>\n"+
         "`♦` <@&1284145958149554309>\n"+
         "`♦` <@&1247699315908935680>\n"

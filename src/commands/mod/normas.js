@@ -28,10 +28,8 @@ module.exports = {
       .setColor("NotQuiteBlack")
       .setTitle("⬆️ ROLES POR NIVEL")
       .setDescription("Alcanzar ciertos niveles te otorgará roles especiales con beneficios:\n"+
-        "`♦` <@&1284145913354522685>\n"+
         "`♦` <@&1234893710588645426>\n"+
         "`♦` <@&1284145958149554309>\n"+
-        "`♦` <@&1251306364878458931>\n"+
         "`♦` <@&1247699315908935680>\n"
       )
       .setImage(gifURL);
